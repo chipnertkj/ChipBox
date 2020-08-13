@@ -1,0 +1,67 @@
+﻿  main.cpp
+c:\users\chipnertkj\documents\github\chipbox c++\chipbox\main.cpp(196): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
+c:\users\chipnertkj\documents\github\chipbox c++\chipbox\main.cpp(222): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+c:\users\chipnertkj\documents\github\chipbox c++\chipbox\main.cpp(223): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\chipnertkj\documents\github\chipbox c++\chipbox\main.cpp(224): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\chipnertkj\documents\github\chipbox c++\chipbox\main.cpp(226): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\chipnertkj\documents\github\chipbox c++\chipbox\main.cpp(290): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+c:\users\chipnertkj\documents\github\chipbox c++\chipbox\main.cpp(314): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\chipnertkj\documents\github\chipbox c++\chipbox\main.cpp(315): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\chipnertkj\documents\github\chipbox c++\chipbox\main.cpp(368): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+c:\users\chipnertkj\documents\github\chipbox c++\chipbox\main.cpp(369): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+c:\users\chipnertkj\documents\github\chipbox c++\chipbox\main.cpp(400): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+c:\users\chipnertkj\documents\github\chipbox c++\chipbox\main.cpp(406): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+c:\users\chipnertkj\documents\github\chipbox c++\chipbox\main.cpp(413): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+c:\users\chipnertkj\documents\github\chipbox c++\chipbox\main.cpp(414): warning C4244: 'argument': conversion from 'int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+c:\users\chipnertkj\documents\github\chipbox c++\chipbox\main.cpp(414): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+c:\users\chipnertkj\documents\github\chipbox c++\chipbox\main.cpp(456): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\chipnertkj\documents\github\chipbox c++\chipbox\main.cpp(456): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\chipnertkj\documents\github\chipbox c++\chipbox\main.cpp(458): warning C4244: 'argument': conversion from 'float' to 'uint8_t', possible loss of data
+c:\users\chipnertkj\documents\github\chipbox c++\chipbox\main.cpp(472): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\chipnertkj\documents\github\chipbox c++\chipbox\main.cpp(472): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\chipnertkj\documents\github\chipbox c++\chipbox\main.cpp(474): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+          and
+          [
+              T=float
+          ]
+  ChipBox.vcxproj -> C:\Users\Chipnertkj\Documents\GitHub\ChipBox C++\x64\Debug\ChipBox.exe
