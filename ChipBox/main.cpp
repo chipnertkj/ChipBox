@@ -12,7 +12,7 @@
 
 #define FILE "";
 
-char filename[128] = "";
+char filename[128] = "Untitled.chipbox";
 
 #pragma region Discord RPC
 
@@ -56,9 +56,17 @@ int displayW = sf::VideoMode::getDesktopMode().width;
 int displayH = sf::VideoMode::getDesktopMode().height;
 int boxSize, pat;
 int popup = -1;
+int hover = -1;
+int framerateLimit = 0;
 float scale, out;
 bool fullscreen = false;
-bool drawReset, channelsUpdated = true;
+bool pressed = false;
+bool debug = false;
+bool drawReset = true;
+bool channelsUpdated = true;
+bool vsync = true;
+bool shaders = true;
+
 sf::Int64 dt;	// delta time
 
 sf::RenderWindow window(sf::VideoMode(300, 1), "Loading...");
@@ -66,6 +74,7 @@ sf::View view = window.getView();
 sf::Event event;
 sf::Vector2u windowSize = window.getSize();
 
+sf::RenderTexture render;
 sf::RenderTexture channelScroll;
 sf::RenderTexture channelPanel;
 sf::RenderTexture pianoKeys;
@@ -81,6 +90,8 @@ sf::Vector2u pianoRollSize;
 enum c
 {
 	bg,
+	logo1,
+	logo2,
 	inside,
 	outside,
 	outline,
@@ -101,6 +112,8 @@ enum c
 uint8_t theme[][3]
 {
 	{111, 116, 125},	// bg
+	{133, 139, 150},	// logo1
+	{78, 82, 89},		// logo2
 	{102, 105, 116},	// inside
 	{63, 66, 71},		// outside
 	{37, 37, 37},		// outline
@@ -122,9 +135,16 @@ enum channelType
 	mod
 };
 
+enum hovers
+{
+	addCh,
+	renameCh,
+};
+
 enum popups
 {
 	addChannel,
+	renameChannel
 };
 
 #pragma endregion
@@ -173,26 +193,19 @@ std::vector<Channel> channels;
 
 
 #pragma region Utility functions
-float approach(int a, int b, int c)
+float approach(float a, float b, float c)
 {
-	// debug
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::F3))
+	if (debug)
 		std::cout << "\t" << a;
-	// debug
-
 	if (a < b)
 		a += c;
 	if (a > b)
 		a -= c;
-
-	// debug
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::F3)) {
+	if (debug) {
 		std::cout << " && " << c << " = " << a << std::endl;
 		if (a == b)
 			std::cout << "[appr]\ta == " << b << std::endl;
 	}
-	// debug
-
 	return a;
 }
 
@@ -203,27 +216,42 @@ void displaySetup(bool reset)
 	if (reset) {
 		displayW = sf::VideoMode::getDesktopMode().width;
 		displayH = sf::VideoMode::getDesktopMode().height;
+		// display
 		int w = displayW;
 		int h = displayH;
 		if (!fullscreen) {
-			w = (int)((float)displayW*0.75);
-			h = (int)((float)displayH*0.75);
+			w = (int)((float)displayW * 0.8f);
+			h = (int)((float)displayH * 0.8f);
 			window.create(sf::VideoMode(w, h), title + " | " + version, sf::Style::Close);
 		}
 		else {
 			window.create(sf::VideoMode(w, h), title + " | " + version, sf::Style::Fullscreen);
 		}
+
+		// icon
+		sf::Image icon;
+		icon.loadFromFile("images/icon64.png");
+		window.setIcon(64, 64, icon.getPixelsPtr());
 	}
 
-	window.setVerticalSyncEnabled(true);
+	if (vsync) {
+		window.setFramerateLimit(0);
+		window.setVerticalSyncEnabled(true);
+	}
+	else
+	{
+		window.setVerticalSyncEnabled(false);
+		window.setFramerateLimit(framerateLimit);
+	}
 
+	// var setup
 	windowSize = window.getSize();
 	if (reset)
-		view.setSize(windowSize.x, windowSize.y);
-	boxSize = std::min(windowSize.x, windowSize.y) / 3.5f;
-	out = boxSize / 50;
-	scale = (float)out / 7;
-	pat = std::ceil(boxSize / 7);
+		view.setSize((float)windowSize.x, (float)windowSize.y);
+	boxSize = (int)((float)std::min(windowSize.x, windowSize.y) / 3.5f);
+	out = (float)boxSize / 50.0f;
+	scale = (float)out / 7.0f;
+	pat = (int)std::ceil((float)boxSize / 7.0f);
 
 	drawReset = true;
 }
@@ -260,9 +288,16 @@ sf::Color clear = color(c::bg, 255);
 
 void keyPressed(sf::Keyboard::Key key)
 {
-	if (key == sf::Keyboard::F11) {
+	switch (key) {
+	default: break;
+	case sf::Keyboard::Key::F3:
+		debug = !debug;
+		std::cout << "[debug] " << debug << std::endl; break;
+	case sf::Keyboard::Key::F11:
 		fullscreen = !fullscreen;
-		displaySetup(true);
+		displaySetup(true); break;
+	case sf::Keyboard::Key::Escape:
+		popup = -1; break;
 	}
 }
 
@@ -271,15 +306,31 @@ void keyReleased(sf::Keyboard::Key key)
 
 }
 
+void mousePressed(sf::Mouse::Button button)
+{
+	if (button == sf::Mouse::Button::Left) {
+		pressed = true;
+
+		switch (hover) {
+		case hovers::addCh:
+			popup = popups::addChannel; pressed = false; break;
+		}
+	}
+}
+
+void mouseReleased(sf::Mouse::Button button)
+{
+	if (button == sf::Mouse::Button::Left) {
+		
+	}
+}
+
 // handles SFML events
 void eventHandler()
 {
-	// if you don't know what this does you should probably watch some SFML tutorials first idiot
 	while (window.pollEvent(event))
 	{
 		switch (event.type) {
-		default:
-			break;
 		case sf::Event::EventType::Closed:
 			window.close(); break;
 		case sf::Event::KeyPressed:
@@ -287,9 +338,13 @@ void eventHandler()
 		case sf::Event::KeyReleased:
 			keyReleased(event.key.code); break;
 		case sf::Event::Resized:
-			view.setSize(event.size.width, event.size.height);
+			view.setSize((float)(event.size.width), (float)(event.size.height));
 			window.setSize(sf::Vector2u(event.size.width, event.size.height));
 			displaySetup(false); break;
+		case sf::Event::MouseButtonPressed:
+			mousePressed(event.mouseButton.button); break;
+		case sf::Event::MouseButtonReleased:
+			mouseReleased(event.mouseButton.button); break;
 		}
 	}
 }
@@ -301,24 +356,44 @@ int main()
 	// rpc
 	g_Discord->Initialize();
 	g_Discord->Update();
-
+	
 	// init
 	displaySetup(true);
+	if (!render.create(displayW, displayH))
+		return 1;
 	sf::Clock clock;
+	int hoverLast = -1;
+	int popupLast = -1;
+	sf::Vector2i mouse;
+
+	// shader
+	sf::Shader shaderH;
+	sf::Shader shaderV;
+	if (!shaderH.loadFromFile("shaders/gaussianH.glsl", sf::Shader::Fragment))
+		return 1;
+	if (!shaderV.loadFromFile("shaders/gaussianV.glsl", sf::Shader::Fragment))
+		return 1;
+	shaderH.setUniform("u_texture", sf::Shader::CurrentTexture);
+	shaderV.setUniform("u_texture", sf::Shader::CurrentTexture);
+	shaderH.setUniform("resolution", (float)displayW);
+	shaderV.setUniform("resolution", (float)displayH);
 
 	// delta
 	int v;
 	float val;
 
 	std::map<std::string, int> delta;
-	delta["addH"] = 0.0f;
-	delta["channels"] = 100.0f;
+	delta["addH"] = 0;
+	delta["channels"] = 100;
+	delta["popup"] = 0;
 
 	// textures
+	sf::Texture t_logo256;
 	sf::Texture t_plus;
 	sf::Texture t_highlight1;
 	sf::Texture t_highlight2;
 
+	t_logo256.loadFromFile("images/logo256.png");
 	t_plus.loadFromFile("images/plus.png");
 	t_highlight1.loadFromFile("images/highlight1.png");
 	t_highlight2.loadFromFile("images/highlight2.png");
@@ -328,13 +403,12 @@ int main()
 
 	f_timeburner.loadFromFile("fonts/timeburnernormal.ttf");
 
-	// strings
-	std::string hover;
-	std::string hoverLast;
-
-	const std::string hoverAdd = "add";
-
 	// drawables
+	// render
+	sf::Sprite renderSprite;
+	// bg
+	sf::Sprite sp_bgb(t_logo256);
+	sf::Sprite sp_bgf(t_logo256);
 	// add box
 	sf::RectangleShape dr_boxb;
 	sf::RectangleShape dr_boxf;
@@ -351,7 +425,8 @@ int main()
 	sf::RectangleShape dr_popupb;
 	sf::RectangleShape dr_popupf;
 	sf::RectangleShape dr_popupInput;
-	sf::Text tx_popupInput("Channel name:", f_timeburner);
+	sf::Text tx_popup("Channel name:", f_timeburner);
+	sf::Text tx_popupInput("", f_timeburner);
 
 	// drawables' vars
 	sf::Vector2f bt_add_p;
@@ -363,66 +438,119 @@ int main()
 	{
 		// reset drawables
 		if (drawReset) {
+			sf::Vector2u v2u;
+			int x, y, w, h;
+
+			// bg
+			// sp_bgb
+			w = t_logo256.getSize().x;
+			x = (windowSize.x - w) / 2 + 1;
+			y = (windowSize.y - w) / 2 + 1;
+			sp_bgb.setPosition(x, y);
+			sp_bgb.setColor(color(c::logo1, 255));
+			// sp_bgf
+			x = (windowSize.x - w) / 2;
+			y = (windowSize.y - w) / 2;
+			sp_bgf.setPosition(x, y);
+			sp_bgf.setColor(color(c::logo2, 255));
 			// add box
 			// dr_boxb
-			dr_boxb.setPosition(sf::Vector2f(windowSize.x - boxSize, windowSize.y - boxSize));
-			dr_boxb.setSize(sf::Vector2f(boxSize, boxSize));
+			w = boxSize;
+			h = boxSize;
+			x = windowSize.x - w;
+			y = windowSize.y - h;
+			dr_boxb.setPosition(x, y);
+			dr_boxb.setSize(sf::Vector2f(w, h));
 			dr_boxb.setFillColor(color(c::outside, 255));
 			dr_boxb.setOutlineColor(color(c::outline, 255));
 			dr_boxb.setOutlineThickness(-1);
 			// dr_boxf
-			dr_boxf.setPosition(sf::Vector2f(windowSize.x - boxSize + out, windowSize.y - boxSize + out));
-			dr_boxf.setSize(sf::Vector2f(boxSize - out * 2.0f, boxSize - out * 7.0f));
+			dr_boxf.setPosition(x + out, y + out);
+			dr_boxf.setSize(sf::Vector2f(w - out * 2.0f, h - out * 7.0f));
 			dr_boxf.setFillColor(color(c::inside, 255));
 			dr_boxf.setOutlineColor(color(c::outline, 255));
 			dr_boxf.setOutlineThickness(-1);
 			// bt_add
-			sf::Vector2u plus_size = t_plus.getSize();
-			bt_add.setColor(color(c::light1, 110));
-			bt_add.setScale(sf::Vector2f(scale, scale));
-			bt_add.setOrigin(sf::Vector2f((float)plus_size.x / 2.0f * scale, (float)plus_size.y / 2.0f * scale));
-			bt_add.setPosition(sf::Vector2f(std::floor((float)windowSize.x - boxSize / 2.0f), std::floor((float)windowSize.y - out * 3.5f)));
-			bt_add_p.x = (float)windowSize.x - boxSize / 2.0f;
+			v2u = t_plus.getSize();
+			bt_add.setColor(color(c::inside, 255));
+			bt_add.setScale(scale, scale);
+			bt_add.setOrigin((float)v2u.x / 2.0f * scale, (float)v2u.y / 2.0f * scale);
+			bt_add.setPosition(std::floor((float)windowSize.x - boxSize / 2.0f), std::floor((float)windowSize.y - out * 3.5f));
+			bt_add_p.x = (float)windowSize.x - (float)boxSize / 2.0f;
 			bt_add_p.y = (float)windowSize.y - out * 3.5f;
-			bt_add_s.x = (float)plus_size.x * scale * 5.0f;
-			bt_add_s.y = (float)plus_size.x * scale * 2.0f;
+			bt_add_s.x = (float)v2u.x * scale * 5.0f;
+			bt_add_s.y = (float)v2u.x * scale * 2.0f;
 			// bt_addH1
 			bt_addH1.setColor(color(c::light1, 0));
-			bt_addH1.setPosition(sf::Vector2f(std::ceil((float)windowSize.x - boxSize / 2.0f), std::floor((float)windowSize.y - out * 3.2f)));
-			bt_addH1.setOrigin(sf::Vector2f(std::ceil(highlight_size.x / 2.0f), std::ceil(highlight_size.y / 2.0f)));
+			bt_addH1.setPosition(std::ceil((float)windowSize.x - (float)boxSize / 2.0f), std::floor((float)windowSize.y - out * 3.2f));
+			bt_addH1.setOrigin(std::ceil((float)highlight_size.x / 2.0f), std::ceil((float)highlight_size.y / 2.0f));
 			bt_addH1.setScale(sf::Vector2f(scale / 1.3f, scale / 1.3f));
 			// bt_addH2
 			bt_addH2.setColor(color(c::light1, 0));
-			bt_addH2.setPosition(sf::Vector2f(std::ceil((float)windowSize.x - boxSize / 2.0f), std::floor((float)windowSize.y - out * 3.2f)));
-			bt_addH2.setOrigin(sf::Vector2f(std::ceil(highlight_size.x / 2.0f), std::ceil(highlight_size.y / 2.0f)));
+			bt_addH2.setPosition(std::ceil((float)windowSize.x - (float)boxSize / 2.0f), std::floor((float)windowSize.y - out * 3.2f));
+			bt_addH2.setOrigin(std::ceil((float)highlight_size.x / 2.0f), std::ceil((float)highlight_size.y / 2.0f));
 			bt_addH2.setScale(sf::Vector2f(scale / 1.3f, scale / 1.3f));
 			// tx_add1
-			tx_add1.setCharacterSize(scale * 50);
+			tx_add1.setCharacterSize((unsigned int)(scale * 40.0f));
 			sf::FloatRect textRect = tx_add1.getLocalBounds();
 			tx_add1.setOrigin(std::ceil(textRect.left + textRect.width / 2.0f), std::ceil(textRect.top + textRect.height / 2.0f));
 			tx_add1.setFillColor(color(c::light1, 255));
-			tx_add1.setPosition(sf::Vector2f(std::ceil((float)windowSize.x - boxSize / 2.0f), std::ceil((float)windowSize.y - boxSize / 2.0f - textRect.height)));
+			tx_add1.setPosition(std::ceil((float)windowSize.x - boxSize / 2.0f), std::ceil((float)windowSize.y - (float)boxSize / 2.0f - textRect.height));
 			// tx_add1
-			tx_add2.setCharacterSize(scale * 50);
+			tx_add2.setCharacterSize((unsigned int)(scale * 40.0f));
 			textRect = tx_add2.getLocalBounds();
 			tx_add2.setOrigin(std::ceil(textRect.left + textRect.width / 2.0f), std::ceil(textRect.top + textRect.height / 2.0f));
 			tx_add2.setFillColor(color(c::light1, 255));
-			tx_add2.setPosition(sf::Vector2f(std::ceil((float)windowSize.x - boxSize / 2.0f), std::ceil((float)windowSize.y - boxSize / 2.0f + textRect.height / 1.75f)));
+			tx_add2.setPosition(std::ceil((float)windowSize.x - boxSize / 2.0f), std::ceil((float)windowSize.y - (float)boxSize / 2.0f + textRect.height / 1.75f));
 			// channels
 			// dr_channelsb
-			dr_channelsb.setPosition(sf::Vector2f(windowSize.x * delta["channels"], windowSize.y - boxSize));
-			dr_channelsb.setSize(sf::Vector2f(windowSize.x - boxSize, boxSize));
+			w = windowSize.x - boxSize;
+			h = boxSize;
+			x = windowSize.x * delta["channels"];
+			y = windowSize.y - boxSize;
+			dr_channelsb.setPosition(x, y);
+			dr_channelsb.setSize(sf::Vector2f(w, h));
 			dr_channelsb.setFillColor(color(c::outside, 255));
 			dr_channelsb.setOutlineColor(color(c::outline, 255));
 			dr_channelsb.setOutlineThickness(-1);
 			// dr_channelsf
-			dr_channelsf.setPosition(sf::Vector2f(windowSize.x * delta["channels"] + out, windowSize.y - boxSize + out));
-			dr_channelsf.setSize(sf::Vector2f(windowSize.x - boxSize - out * 2.0f, boxSize - out * 7.0f));
+			dr_channelsf.setPosition(x + out, y + out);
+			dr_channelsf.setSize(sf::Vector2f(w - out * 2.0f, h - out * 7.0f));
 			dr_channelsf.setFillColor(color(c::inside, 255));
 			dr_channelsf.setOutlineColor(color(c::outline, 255));
 			dr_channelsf.setOutlineThickness(-1);
+			// popups
+			// dr_popupbg
+			w = windowSize.x;
+			h = windowSize.y;
+			dr_popupbg.setSize(sf::Vector2f(w, h));
+			dr_popupbg.setFillColor(color(c::dark, 0));
+			// dr_popupb
+			w = windowSize.x / 3;
+			h = windowSize.y / 5;
+			x = (windowSize.x - w) / 2;
+			y = (windowSize.y - h) / 2;
+			dr_popupb.setPosition(x, y);
+			dr_popupb.setSize(sf::Vector2f(w, h));
+			dr_popupb.setFillColor(color(c::outside, 0));
+			dr_popupb.setOutlineColor(color(c::outline, 0));
+			dr_popupb.setOutlineThickness(-1);
+			// dr_popupf
+			dr_popupf.setPosition(x + out, y + out);
+			dr_popupf.setSize(sf::Vector2f(w - out * 2.0f, h - out * 7.0f));
+			dr_popupf.setFillColor(color(c::inside, 0));
+			dr_popupf.setOutlineColor(color(c::outline, 0));
+			dr_popupf.setOutlineThickness(-1);
+			// tx_popup
 
 			drawReset = false;
+
+			// delta fix (performace fix fix ;) )
+			delta["addH"] += 1;
+			delta["popup"] += 1;
+
+			if (debug)
+				std::cout << "[drawables] reset" << std::endl;
 		}
 
 		// handle events
@@ -430,25 +558,42 @@ int main()
 
 		// clear
 		hoverLast = hover;
-		hover = "";
-		window.clear(clear);
+		hover = -1;
+		mouse = sf::Mouse::getPosition(window);
+		render.clear(clear);
+		window.clear();
 #pragma endregion
 #pragma region Update
 
 		// bt_add button
-		if (button(bt_add_p, bt_add_s, true)) {
-			hover = hoverAdd;
+		if (popup == -1) {
+			if (button(bt_add_p, bt_add_s, true)) {
+				hover = hovers::addCh;
+			}
+		}
+		else // close popup pressed
+		{
+			if (pressed) {
+				sf::Vector2f p, s;
+				p = dr_popupb.getPosition();
+				s = dr_popupb.getSize();
+				if (mouse.x < p.x || mouse.x > p.x + s.x || mouse.y < p.y || mouse.y > p.y + s.y) {
+					popup = -1;
+				}
+			}
 		}
 
+		// bt_add color
 		if (hoverLast != hover) {
-			if (hover == hoverAdd)
+			if (hover == hovers::addCh)
 				bt_add.setColor(color(c::light1, 255));
 			else
-				bt_add.setColor(color(c::light1, 110));
+				bt_add.setColor(color(c::inside, 255));
 		}
 
+		// bt_add highlight
 		if (hoverLast != hover || (delta["addH"] > 0 && delta["addH"] < 100)) {
-			if (hover == hoverAdd)
+			if (hover == hovers::addCh)
 				v = 100;
 			else
 				v = 0;
@@ -471,11 +616,51 @@ int main()
 
 			delta["channels"] = approach(delta["channels"], v, std::ceil(std::abs((float)delta["channels"] - v) / 6.0f));
 			val = (float)delta["channels"] / 100.0f;
-			dr_channelsb.setPosition(sf::Vector2f(windowSize.x * val, windowSize.y - boxSize));
-			dr_channelsf.setPosition(sf::Vector2f(windowSize.x * val + out, windowSize.y - boxSize + out));
+			dr_channelsb.setPosition(windowSize.x * val, windowSize.y - boxSize);
+			dr_channelsf.setPosition(windowSize.x * val + out, windowSize.y - boxSize + out);
 
 			if (delta["channels"] == 0 || delta["channels"] == 100)
 				channelsUpdated = false;
+		}
+
+		// popup
+		if (popupLast != popup || (delta["popup"] != 0 && delta["popup"] != 100)) {
+			if (popup == -1)
+				v = 0;
+			else
+				v = 100;
+			delta["popup"] = approach(delta["popup"], v, std::ceil(std::abs((float)delta["popup"] - v) / 2.5f));
+			val = (float)delta["popup"] / 100.0f;
+
+			// color
+			sf::Color cc = dr_popupb.getFillColor();
+			cc.a = val * 255.0f;
+			dr_popupb.setFillColor(cc);
+			cc = dr_popupf.getFillColor();
+			cc.a = val * 255.0f;
+			dr_popupf.setFillColor(cc);
+			cc = dr_popupb.getOutlineColor();
+			cc.a = val * 255.0f;
+			dr_popupb.setOutlineColor(cc);
+			dr_popupf.setOutlineColor(cc);
+			cc = dr_popupbg.getFillColor();
+			cc.a = val * 127.5f;	// 255 * 0.5 for bg alpha
+			dr_popupbg.setFillColor(cc);
+
+			// size
+			switch (popup) {
+			default: break;
+			case popups::addChannel:
+				int x, y, w, h;
+				w = windowSize.x / 3 * val;
+				h = windowSize.y / 5;
+				x = (windowSize.x - w) / 2;
+				y = (windowSize.y - h) / 2;
+				dr_popupb.setPosition(x, y);
+				dr_popupb.setSize(sf::Vector2f(w, h));
+				dr_popupf.setPosition(x + out, y + out);
+				dr_popupf.setSize(sf::Vector2f(w - out * 2.0f, h - out * 7.0f));
+			}
 		}
 
 #pragma endregion
@@ -488,25 +673,49 @@ int main()
 		// ##     ## ##    ##  ##     ## ##  ##  ## 
 		// ########  ##     ## ##     ##  ###  ###
 
+		// bg
+		render.draw(sp_bgb);
+		render.draw(sp_bgf);
+
 		// channels
-		window.draw(dr_channelsb);
-		window.draw(dr_channelsf);
+		render.draw(dr_channelsb);
+		render.draw(dr_channelsf);
 
 		// add box
-		window.draw(dr_boxb);
-		window.draw(dr_boxf);
-		window.draw(tx_add1);
-		window.draw(tx_add2);
-		window.draw(bt_add);
-		window.draw(bt_addH1);
-		window.draw(bt_addH2);
+		render.draw(dr_boxb);
+		render.draw(dr_boxf);
+		render.draw(tx_add1);
+		render.draw(tx_add2);
+		render.draw(bt_add);
+		render.draw(bt_addH1);
+		render.draw(bt_addH2);
+		render.display();
+		renderSprite.setTexture(render.getTexture());
+
+		if (popup == -1 || !shaders)
+			window.draw(renderSprite);
+		else
+		{
+			render.draw(renderSprite, &shaderH);
+			renderSprite.setTexture(render.getTexture());
+			window.draw(renderSprite, &shaderV);
+		}
+
+		// popups
+		window.draw(dr_popupbg);
+		window.draw(dr_popupb);
+		window.draw(dr_popupf);
+		window.draw(dr_popupInput);
+		window.draw(tx_popupInput);
 
 #pragma region main
 		window.display();
 
-		// clock restart
+		// set
+		popupLast = popup;
 		dt = clock.getElapsedTime().asMicroseconds();
 		clock.restart();
+		pressed = false;
 	}
 
 	// end
