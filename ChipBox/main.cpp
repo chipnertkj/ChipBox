@@ -12,6 +12,12 @@ void keyPressed(sf::Keyboard::Key key) {
 		fullscreen = !fullscreen;
 		initialize(true);
 		break;
+	case sf::Keyboard::Key::F1:
+		project.channelCount++;
+		break;
+	case sf::Keyboard::Key::F2:
+		project.channelCount--;
+		break;
 	}
 }
 void keyReleased(sf::Keyboard::Key key) {
@@ -57,6 +63,7 @@ int main() {
 	// program loop
 	while (mainWindow.isOpen()) {
 		handleEvents();
+		update();
 		render();
 
 		// reset delta time clock

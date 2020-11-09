@@ -142,6 +142,8 @@
     <ClInclude Include="InterfaceClasses.h" />
     <ClInclude Include="InterfaceData.h" />
     <ClInclude Include="InterfaceFunctions.h" />
+    <ClInclude Include="ProjectClasses.h" />
+    <ClInclude Include="ProjectData.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

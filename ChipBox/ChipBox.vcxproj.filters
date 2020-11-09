@@ -32,5 +32,11 @@
     <ClInclude Include="InterfaceFunctions.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="ProjectClasses.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectData.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -13,7 +13,12 @@ bool vsync = true;
 unsigned int framerate = 60;
 
 // delta time
-float dt = 0.0f;
+float dt = 1.0f;
+
+// approach val
+std::map<const char *, float> val;
+float v;
+float tempv;
 
 // clear color
 sf::Color clearColor;
@@ -57,6 +62,7 @@ enum class c
 	selection,
 	keyC,
 	keyG,
+	clearWhite,
 };
 
 // uint8_t range : 0-255
@@ -78,4 +84,5 @@ uint8_t theme[][3]
 	{76, 102, 204},		// selection
 	{100, 100, 100},	// keyC
 	{75, 75, 75},		// keyG
+	{255, 255, 255},	// clearWhite
 };

@@ -1,13 +1,16 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 #include "InterfaceClasses.h"
+#include "ProjectClasses.h"
 
 Render mainRender;
+Project project;
 
 // drawables
 Menu d_menu;
 Container d_addBox;
 Container d_channelBox;
+Scroll d_channels;
 
 // interface scaling
 // this is where ui elements are actually described
@@ -18,6 +21,10 @@ void setup() {
 	scale = out / 7.0f;
 	pat = (int)std::ceil((float)boxSize / 8.0f);
 	patDist = (int)(out * 0.75f);
+
+	// approach values
+	val["channelBoxPos"] = 0.0f;
+	val["channelsAlpha"] = 0.0f;
 
 	// setup drawables
 	// clear color
@@ -33,6 +40,8 @@ void setup() {
 	d_channelBox.set(0.0f, (float)(res.y - boxSize), (float)(res.x - boxSize), (float)boxSize);
 	d_channelBox.initPos();
 	d_channelBox.initTheme();
+	// d_channels
+	d_channels.copy(d_channelBox);
 }
 
 // load the shaders
@@ -92,16 +101,33 @@ void initialize(bool recreate) {
 	setup();
 }
 
+// main tick
+void update() {
+	// d_channelBox and d_channels position
+	setV(project.channelCount > 0);
+	smooth("channelBoxPos", v, 6.0f);
+	tempv = lerp((float)(res.x - boxSize) + out, 0.0f, val["channelBoxPos"]);
+	d_channelBox.x = tempv;
+	d_channelBox.initPos();
+	d_channels.follow(d_channelBox);
+	// d_channelBox scroll alpha
+	setV(val["channelBoxPos"] > 0.99f);
+	smooth("channelsAlpha", v, 3.0f);
+	tempv = val["channelsAlpha"] * 255.0f;
+	d_channels.render.sprite.setColor(color(c::clearWhite, tempv));
+}
+
 // main application renderer
 void render() {
 	// clear
 	mainWindow.clear(clearColor);
 	mainRender.texture.clear(clearColor);
+	d_channels.render.texture.clear();
 
 	// draw drawables
-	d_addBox.draw(mainRender.texture);
 	d_channelBox.draw(mainRender.texture);
-
+	d_channels.draw(mainRender.texture);
+	d_addBox.draw(mainRender.texture);
 
 	// render main render to window
 	mainRender.texture.display();

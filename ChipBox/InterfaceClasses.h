@@ -65,13 +65,12 @@ public:
 // class for drawable box containers
 class Container : public Drawable {
 private:
-	float spacing = 1.1f;
-
 	sf::Vertex back[4];
 	sf::Vertex front[4];
 	sf::Vertex backline[8];
 	sf::Vertex frontline[8];
 public:
+	float spacing = 1.1f;
 	float bottom = 5.0f;
 
 	Container() {}
@@ -164,8 +163,7 @@ public:
 
 class Scroll {
 public:
-	sf::RenderTexture render;
-	sf::Sprite sprite;
+	Render render;
 	sf::Vector2f scroll;
 	sf::Vector2f appr;
 	sf::Vector2f apprLast;
@@ -181,8 +179,15 @@ public:
 	}
 
 	void copy(Container &from) {
-		sprite.setPosition(from.x, from.y);
-		create((int)from.w, (int)from.h);
+		float sp = from.spacing * out;
+		float b = (from.spacing + from.bottom) * out;
+		render.sprite.setPosition(from.x + sp, from.y + sp);
+		create((int)(from.w - sp * 2.0f) - 1, (int)(from.h - b - sp) - 1);
+	}
+
+	void follow(Container &from) {
+		float sp = from.spacing * out;
+		render.sprite.setPosition(from.x + sp, from.y + sp);
 	}
 
 	void smoothing() {
@@ -196,8 +201,8 @@ public:
 	}
 
 	void draw(sf::RenderTarget& target) {
-		render.display();
-		sprite.setTexture(render.getTexture());
-		target.draw(sprite);
+		render.texture.display();
+		render.sprite.setTexture(render.texture.getTexture());
+		target.draw(render.sprite);
 	}
 };
