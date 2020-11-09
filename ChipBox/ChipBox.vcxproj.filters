@@ -13,47 +13,23 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\SDK">
-      <UniqueIdentifier>{f5e387cb-0c01-4a11-8145-15ce686772c4}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Discord SDK\src\connection_win.cpp">
-      <Filter>Source Files\SDK</Filter>
-    </ClCompile>
-    <ClCompile Include="Discord SDK\src\discord_register_win.cpp">
-      <Filter>Source Files\SDK</Filter>
-    </ClCompile>
-    <ClCompile Include="Discord SDK\src\discord_rpc.cpp">
-      <Filter>Source Files\SDK</Filter>
-    </ClCompile>
-    <ClCompile Include="Discord SDK\src\dllmain.cpp">
-      <Filter>Source Files\SDK</Filter>
-    </ClCompile>
-    <ClCompile Include="Discord SDK\src\rpc_connection.cpp">
-      <Filter>Source Files\SDK</Filter>
-    </ClCompile>
-    <ClCompile Include="Discord SDK\src\serialization.cpp">
-      <Filter>Source Files\SDK</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Discord SDK\src\backoff.h">
-      <Filter>Source Files\SDK</Filter>
+    <ClInclude Include="Interface.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Discord SDK\src\msg_queue.h">
-      <Filter>Source Files\SDK</Filter>
+    <ClInclude Include="InterfaceData.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Discord SDK\src\rpc_connection.h">
-      <Filter>Source Files\SDK</Filter>
+    <ClInclude Include="InterfaceClasses.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Discord SDK\src\serialization.h">
-      <Filter>Source Files\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="Discord.h">
+    <ClInclude Include="InterfaceFunctions.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
