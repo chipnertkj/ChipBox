@@ -15,27 +15,30 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Interface.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InterfaceData.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InterfaceClasses.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InterfaceFunctions.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="ProjectClasses.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="ProjectData.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Host.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIClasses.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIData.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIFunctions.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

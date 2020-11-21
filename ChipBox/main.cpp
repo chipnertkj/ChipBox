@@ -1,32 +1,51 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-#include "Interface.h"
+#include "GUI.h"
+#include "Host.h"
 
+// event handler
 sf::Event event;
 
-void keyPressed(sf::Keyboard::Key key) {
-	switch (key)
-	{
-	case sf::Keyboard::Key::F11:
-		fullscreen = !fullscreen;
-		initialize(true);
-		break;
-	case sf::Keyboard::Key::F1:
-		project.channelCount++;
-		break;
-	case sf::Keyboard::Key::F2:
-		project.channelCount--;
-		break;
+// keybinds
+gui::Keybind kb_addChannel(sf::Keyboard::Key::W, true);
+
+void keyPressed(sf::Keyboard::Key& key) {
+	// keybinds
+	if (kb_addChannel.Check(key)) {
+		popup = popups::addChannel;
+	}
+	else {
+		// hardcoded
+		switch (key)
+		{
+		case sf::Keyboard::Key::F11:
+			fullscreen = !fullscreen;
+			gui::init(true);
+			break;
+		case sf::Keyboard::Key::Escape:
+			if (popup != popups::none)
+				popup = popups::none;
+			break;
+		}
 	}
 }
-void keyReleased(sf::Keyboard::Key key) {
+
+void keyReleased(sf::Keyboard::Key& key) {
 
 }
-void mousePressed(sf::Mouse::Button button) {
 
+void mousePressed(sf::Mouse::Button& button) {
+	if (hover != hovers::none) {
+		switch (hover) {
+		case hovers::addBox:
+			popup = popups::addChannel;
+			break;
+		}
+	}
 }
-void mouseReleased(sf::Mouse::Button button) {
+
+void mouseReleased(sf::Mouse::Button& button) {
 
 }
 void textEntered(const char text) {
@@ -55,16 +74,18 @@ void handleEvents() {
 int main() {
 	// delta time clock
 	sf::Clock clock;
+	// initialize the host
+
 	// initialize the interface
-	if (!loadShaders())
-		return 1;
-	initialize(true);
+	if (!gui::load())
+		return 1;	// resource loading failed
+	gui::init(true);
 
 	// program loop
 	while (mainWindow.isOpen()) {
 		handleEvents();
-		update();
-		render();
+		gui::update();
+		gui::render();
 
 		// reset delta time clock
 		dt = clock.getElapsedTime().asSeconds();
@@ -72,5 +93,5 @@ int main() {
 	}
 
 	// terminate
-	return 0;
+	return 0;	// executed
 }

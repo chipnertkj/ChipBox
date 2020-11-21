@@ -1,7 +1,6 @@
 ﻿  main.cpp
-c:\users\chipnertkj\documents\github\chipbox\chipbox\interface.h(118): warning C4244: 'argument': conversion from 'float' to 'uint8_t', possible loss of data
   Generating code
-  2 of 410 functions ( 0.5%) were compiled, the rest were copied from previous compilation.
+  0 of 440 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     0 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
