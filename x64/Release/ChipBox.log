@@ -1,0 +1,42 @@
+﻿  GUIClasses.cpp
+C:\Users\Chipnertkj\Documents\Projects\ChipBox\GUIClasses.cpp(207,39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Chipnertkj\Documents\Projects\ChipBox\GUIClasses.cpp(207,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Chipnertkj\Documents\Projects\ChipBox\GUIClasses.cpp(207,15): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Chipnertkj\Documents\Projects\ChipBox\GUIClasses.cpp(223,47): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Chipnertkj\Documents\Projects\ChipBox\GUIClasses.cpp(223,19): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Chipnertkj\Documents\Projects\ChipBox\GUIClasses.cpp(223,15): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Chipnertkj\Documents\Projects\ChipBox\GUIClasses.cpp(345,23): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=int
+          ]
+C:\Users\Chipnertkj\Documents\Projects\ChipBox\GUIClasses.cpp(348,23): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=int
+          ]
+C:\Users\Chipnertkj\Documents\Projects\ChipBox\GUIClasses.cpp(353,18): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Chipnertkj\Documents\Projects\ChipBox\GUIClasses.cpp(353,14): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Chipnertkj\Documents\Projects\ChipBox\GUIClasses.cpp(360,36): warning C4244: '+=': conversion from 'float' to 'T', possible loss of data
+          with
+          [
+              T=int
+          ]
+C:\Users\Chipnertkj\Documents\Projects\ChipBox\GUIClasses.cpp(362,36): warning C4244: '+=': conversion from 'float' to 'T', possible loss of data
+          with
+          [
+              T=int
+          ]
+C:\Users\Chipnertkj\Documents\Projects\ChipBox\GUIClasses.cpp(388,26): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Chipnertkj\Documents\Projects\ChipBox\GUIClasses.cpp(388,18): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Chipnertkj\Documents\Projects\ChipBox\GUIClasses.cpp(389,29): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Chipnertkj\Documents\Projects\ChipBox\GUIClasses.cpp(389,21): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Chipnertkj\Documents\Projects\ChipBox\GUIClasses.cpp(399,48): warning C4267: 'initializing': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\Users\Chipnertkj\Documents\Projects\ChipBox\GUIClasses.cpp(424,88): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Chipnertkj\Documents\Projects\ChipBox\GUIClasses.cpp(424,69): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Generating code
+  3 of 419 functions ( 0.7%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  ChipBox.vcxproj -> C:\Users\Chipnertkj\Documents\Projects\ChipBox\x64\Release\ChipBox.exe
