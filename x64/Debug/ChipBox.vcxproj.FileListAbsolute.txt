@@ -1,2 +1,0 @@
-C:\Users\Chipnertkj\Documents\Projects\ChipBox\x64\Debug\ChipBox.exe
-C:\Users\Chipnertkj\Documents\Projects\ChipBox\x64\Debug\ChipBox.pdb

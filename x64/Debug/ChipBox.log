@@ -1,4 +1,0 @@
-﻿  Main.cpp
-C:\Users\Chipnertkj\Documents\Projects\ChipBox\Main.cpp(26,59): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Chipnertkj\Documents\Projects\ChipBox\Main.cpp(26,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  ChipBox.vcxproj -> C:\Users\Chipnertkj\Documents\Projects\ChipBox\x64\Debug\ChipBox.exe

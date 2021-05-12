@@ -9,68 +9,81 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Misc">
-      <UniqueIdentifier>{2a0aa237-b658-45f7-a96e-87136745f155}</UniqueIdentifier>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Resources\shaders">
+      <UniqueIdentifier>{70abc9e4-65ee-4d5e-9bab-d85e9f34d9bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\images">
+      <UniqueIdentifier>{a54077ad-22db-4f16-b2f1-6cf69147f3b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\fonts">
+      <UniqueIdentifier>{14ebd248-f430-4272-a775-ae3201ca5719}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\audio">
+      <UniqueIdentifier>{0f396951-1d73-40b7-99fe-e2eb38c68b1e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
+    <ClCompile Include="source\App.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GUIClasses.cpp">
+    <ClCompile Include="source\GUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GUIUtility.cpp">
+    <ClCompile Include="source\GUIClasses.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="App.cpp">
+    <ClCompile Include="source\GUIData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GUI.cpp">
+    <ClCompile Include="source\GUIUtility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Input.cpp">
+    <ClCompile Include="source\Input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Keybinds.cpp">
+    <ClCompile Include="source\Keybinds.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GUIData.cpp">
+    <ClCompile Include="source\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ProjectClasses.cpp">
+    <ClCompile Include="source\Project.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Project.cpp">
+    <ClCompile Include="source\ProjectClasses.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="App.h">
+    <ClInclude Include="headers\App.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GUIData.h">
+    <ClInclude Include="headers\GUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Keybinds.h">
+    <ClInclude Include="headers\GUIClasses.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Input.h">
+    <ClInclude Include="headers\GUIData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GUI.h">
+    <ClInclude Include="headers\GUIUtility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GUIUtility.h">
+    <ClInclude Include="headers\Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GUIClasses.h">
+    <ClInclude Include="headers\Keybinds.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ProjectClasses.h">
+    <ClInclude Include="headers\Project.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Project.h">
+    <ClInclude Include="headers\ProjectClasses.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
