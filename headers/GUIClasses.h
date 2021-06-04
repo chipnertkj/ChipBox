@@ -1,5 +1,4 @@
-#ifndef GUICLASSES_H
-#define GUICLASSES_H
+#pragma once
 #pragma warning (disable : 26812)
 
 #include "GUIData.h"
@@ -20,8 +19,8 @@ namespace gui {
 		void set(sf::Vector2f p, sf::Vector2f s);
 		void round();
 
-		virtual void update();
-		virtual void draw(sf::RenderTarget& target);
+		virtual void update() = NULL;
+		virtual void draw(sf::RenderTarget& target) = NULL;
 	};
 
 	class Rectangle : public Empty {
@@ -30,8 +29,9 @@ namespace gui {
 
 		sf::Vertex vert[vertCount];
 	public:
-		Rectangle();
+		Rectangle() {}
 		Rectangle(float x, float y, float w, float h);
+		Rectangle(sf::Vector2f p, sf::Vector2f s);
 
 		void setColor(sf::Color col);
 
@@ -45,10 +45,56 @@ namespace gui {
 
 		sf::Vertex vert[vertCount];
 	public:
+		RectangleOut() {};
+		RectangleOut(float x, float y, float w, float h);
+		RectangleOut(sf::Vector2f p, sf::Vector2f s);
+
 		void setColor(sf::Color col);
 
 		void update() override final;
 		inline void draw(sf::RenderTarget& target) override final;
+	};
+	
+	class ProgressBar : public Empty {
+	private:
+		Rectangle bg;
+		Rectangle val;
+		RectangleOut out;
+		sf::Sprite shadow;
+
+	public:
+		sf::Color* color = NULL;
+
+		float* refValue = NULL;
+		float maxValue = 1.f;
+
+		bool vertical = true;
+
+		void setTextures(sf::Texture& tx1);
+		void updateValue();
+
+		void draw(sf::RenderTarget& target) override final;
+		void update() override final;
+	};
+
+	class Checkbox : public Empty {
+	private:
+		Rectangle bg;
+		Rectangle val;
+		RectangleOut out;
+		sf::Sprite shadow;
+
+	public:
+		sf::Color* color = NULL;
+
+		bool* refValue = NULL;
+
+		void setTextures(sf::Texture& tx1);
+		void updateValue();
+		void check(int mx, int my);
+
+		void draw(sf::RenderTarget& target) override final;
+		void update() override final;
 	};
 
 	class Button : public Empty {
@@ -58,7 +104,7 @@ namespace gui {
 
 	public:
 		bool checked = false;
-		float alpha = 0;
+		float alpha = 0.f;
 		sf::Vector2f defScale;
 
 		sf::Sprite& getSprite();
@@ -67,11 +113,11 @@ namespace gui {
 		void setTextures(sf::Texture& tx1, sf::Texture& tx2);
 		bool check(int mx, int my);
 
-		virtual void setScale(float sx, float sy);
-		virtual void animate();
+		virtual void setScale(float sx, float sy) = NULL;
+		virtual void animate() = NULL;
 
-		virtual void update() override final;
-		virtual void draw(sf::RenderTarget& target) override final;
+		void update() override final;
+		void draw(sf::RenderTarget& target) override final;
 	};
 
 	class ButtonBig : public Button {
@@ -98,7 +144,7 @@ namespace gui {
 		sf::Vector2f scrollApp;
 		sf::Vector2f scrollMax;
 
-		int* scrollScale = 0;
+		int* scrollScale = NULL;
 
 		void display();
 		void create();
@@ -134,7 +180,7 @@ namespace gui {
 		sf::Vector2i mousePosStart;
 	public:
 		// scroll
-		ScrollPanel* scrollPanel = 0;
+		ScrollPanel* scrollPanel = NULL;
 
 		// manual adjustment for buttons
 		float bottom = 5.f;
@@ -161,18 +207,23 @@ namespace gui {
 	class Channels {
 	private:
 		// ui
-		Rectangle* rect = 0;
-		RectangleOut* rectOut = 0;
-		sf::Text* text = 0;
+		Rectangle* rect = NULL;
+		RectangleOut* rectOut = NULL;
+		sf::Text* text = NULL;
+		
+		Rectangle bar;
+		ProgressBar* volume = NULL;
+		Checkbox* muted = NULL;
+
 		// slot count (optimization)
 		unsigned int width = 0u;
 		unsigned int height = 0u;
 	public:
 		int scale = cs.patFull; // scroll scale
-		ScrollPanel* scrollPanel = 0; // for scroll state access
+		ScrollPanel* scrollPanel = NULL; // for scroll state access
 
 		void recalculate(); // recalculates and allocates required memory for slot caching (optimization)
-		void refreshText(); // sets pattern slot numbers according to current scroll
+		void refresh(); // sets pattern slot numbers according to current scroll
 
 		void update();
 		void draw(sf::RenderTarget& target);
@@ -190,5 +241,3 @@ namespace gui {
 	};
 
 }
-
-#endif

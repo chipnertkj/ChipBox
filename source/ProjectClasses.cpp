@@ -27,7 +27,7 @@ namespace proj {
 	}
 
 	Channel* Project::addChannel(std::string name) {
-		app::cslog("PROJECT", "Adding channel \"" + name);
+		app::cslog("PROJECT", "Adding channel \"" + name + "\"");
 		// add channel to project
 		Channel* ch = new Channel(name, songLength);
 		channels.push_back(ch);
@@ -41,7 +41,7 @@ namespace proj {
 	// Channel
 	Channel::Channel(std::string& Name, unsigned int length) {
 		name = Name;
-		for (unsigned int i = 0; i < length; i++)
+		for (unsigned int i = 0u; i < length; i++)
 			slots.push_back(i + project.channels.size()* length);
 	}
 }

@@ -11,12 +11,12 @@ namespace gui {
 	bool cursorDragStarted = false;
 	bool guiScalingStarted = false;
 
-	// channels display
-	Channels channels;
 
-	// widgets
+	// ui elements
 	Widget wd_addbox;
 	Widget wd_channels;
+	Channels channels;
+	ProgressBar bar;
 }
 
 namespace gui {
@@ -75,7 +75,6 @@ namespace gui {
 		wd_channels.scrollPanel->update();
 		if (recreate)
 			wd_channels.scrollPanel->create();
-
 		/// channels
 		if (recreate)
 			channels.recalculate();
@@ -110,7 +109,7 @@ namespace gui {
 		wd_channels.scrollPanel->smooth();
 		// channels
 		channels.update();
-		channels.refreshText(); // TODO: (OPTIMIZATION, 26%) use only when necessary
+		channels.refresh(); // TODO: (OPTIMIZATION, 26%) use only when necessary
 	}
 
 	// GUI rendering
@@ -124,7 +123,7 @@ namespace gui {
 		wd_channels.scrollPanel->clear(th.boxInside);
 		// channels
 		channels.draw(wd_channels.scrollPanel->getTexture());
-		// draw
+		// draw scroll panel
 		wd_channels.scrollPanel->display();
 		wd_channels.draw(app::mainRender.texture);
 

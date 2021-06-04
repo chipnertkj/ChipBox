@@ -6,7 +6,7 @@
 #include <SFML/Graphics.hpp>
 
 namespace gui {
-	bool hover(float mx, float my, float x, float y, float w, float h);
+	bool hover(int mx, int my, float x, float y, float w, float h);
 
 	float approach(float a, float b, float c);
 

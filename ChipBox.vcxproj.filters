@@ -57,6 +57,15 @@
     <ClCompile Include="source\ProjectClasses.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\Host.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\HostClasses.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\HostData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\App.h">
@@ -86,5 +95,113 @@
     <ClInclude Include="headers\ProjectClasses.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="headers\Host.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\HostClasses.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\HostData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\images\.32.png">
+      <Filter>Resources\images</Filter>
+    </Image>
+    <Image Include="resources\images\buttonHighlightBig.png">
+      <Filter>Resources\images</Filter>
+    </Image>
+    <Image Include="resources\images\channel.png">
+      <Filter>Resources\images</Filter>
+    </Image>
+    <Image Include="resources\images\check.png">
+      <Filter>Resources\images</Filter>
+    </Image>
+    <Image Include="resources\images\delete.png">
+      <Filter>Resources\images</Filter>
+    </Image>
+    <Image Include="resources\images\dragHandle.png">
+      <Filter>Resources\images</Filter>
+    </Image>
+    <Image Include="resources\images\highlight2.png">
+      <Filter>Resources\images</Filter>
+    </Image>
+    <Image Include="resources\images\highlight3.png">
+      <Filter>Resources\images</Filter>
+    </Image>
+    <Image Include="resources\images\highlight4.png">
+      <Filter>Resources\images</Filter>
+    </Image>
+    <Image Include="resources\images\icon64.png">
+      <Filter>Resources\images</Filter>
+    </Image>
+    <Image Include="resources\images\icon320.png">
+      <Filter>Resources\images</Filter>
+    </Image>
+    <Image Include="resources\images\icon512.png">
+      <Filter>Resources\images</Filter>
+    </Image>
+    <Image Include="resources\images\logo32.png">
+      <Filter>Resources\images</Filter>
+    </Image>
+    <Image Include="resources\images\logo256.png">
+      <Filter>Resources\images</Filter>
+    </Image>
+    <Image Include="resources\images\logo320.png">
+      <Filter>Resources\images</Filter>
+    </Image>
+    <Image Include="resources\images\logo512.png">
+      <Filter>Resources\images</Filter>
+    </Image>
+    <Image Include="resources\images\minus.png">
+      <Filter>Resources\images</Filter>
+    </Image>
+    <Image Include="resources\images\plus.png">
+      <Filter>Resources\images</Filter>
+    </Image>
+    <Image Include="resources\images\shadow.png">
+      <Filter>Resources\images</Filter>
+    </Image>
+    <Image Include="resources\images\shadow_box.png">
+      <Filter>Resources\images</Filter>
+    </Image>
+    <Image Include="resources\images\shadow_h.png">
+      <Filter>Resources\images</Filter>
+    </Image>
+    <Image Include="resources\images\shadow_v.png">
+      <Filter>Resources\images</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\images\icon512.pdn">
+      <Filter>Resources\images</Filter>
+    </None>
+    <None Include="resources\shaders\gaussianH.glsl">
+      <Filter>Resources\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\gaussianV.glsl">
+      <Filter>Resources\shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="resources\fonts\ralewayitalic.ttf">
+      <Filter>Resources\fonts</Filter>
+    </Font>
+    <Font Include="resources\fonts\ralewaylightitalic.ttf">
+      <Filter>Resources\fonts</Filter>
+    </Font>
+    <Font Include="resources\fonts\ralewaylightnormal.ttf">
+      <Filter>Resources\fonts</Filter>
+    </Font>
+    <Font Include="resources\fonts\ralewaynormal.ttf">
+      <Filter>Resources\fonts</Filter>
+    </Font>
+    <Font Include="resources\fonts\timeburnerbold.ttf">
+      <Filter>Resources\fonts</Filter>
+    </Font>
+    <Font Include="resources\fonts\timeburnernormal.ttf">
+      <Filter>Resources\fonts</Filter>
+    </Font>
   </ItemGroup>
 </Project>

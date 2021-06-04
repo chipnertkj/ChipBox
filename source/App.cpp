@@ -1,6 +1,7 @@
 #include "App.h" // interface
 #include "GUI.h"
 #include "Input.h"
+#include "Host.h"
 
 #include <Windows.h>
 #include <iostream>
@@ -40,6 +41,9 @@ namespace app {
 	sf::Texture tx_plus;
 	sf::Texture tx_buttonHighlightBig;
 	sf::Texture tx_dragHandle;
+	sf::Texture tx_shadow_box;
+	sf::Texture tx_shadow_h;
+	sf::Texture tx_shadow_v;
 	// fonts
 	sf::Font font;
 	// cursors
@@ -52,7 +56,7 @@ namespace app {
 }
 
 namespace app {
-	// window init + resizing
+	// window start + resizing
 	void windowInit(bool recreate, bool resize) {
 		sf::VideoMode vm;
 		if (!resize) {
@@ -177,6 +181,18 @@ namespace app {
 		if (!tx_dragHandle.loadFromFile("resources/images/dragHandle.png"))
 			return false;
 		tx_dragHandle.setSmooth(true);
+		// tx_shadow_box
+		if (!tx_shadow_box.loadFromFile("resources/images/shadow_box.png"))
+			return false;
+		tx_shadow_box.setSmooth(true);
+		// tx_shadow_h
+		if (!tx_shadow_h.loadFromFile("resources/images/shadow_h.png"))
+			return false;
+		tx_shadow_h.setSmooth(true);
+		// tx_shadow_v
+		if (!tx_shadow_v.loadFromFile("resources/images/shadow_v.png"))
+			return false;
+		tx_shadow_v.setSmooth(true);
 
 		/// fonts
 		if (!font.loadFromFile("resources/fonts/timeburnernormal.ttf"))
@@ -190,7 +206,7 @@ namespace app {
 		cursor_text.loadFromSystem(sf::Cursor::Text);
 		cursor_tleftbright.loadFromSystem(sf::Cursor::SizeTopLeftBottomRight);
 
-		cslog("SYSTEM", logColorGreen("DONE"));
+		cslog("SYSTEM", "Done loading resources");
 
 		return true;
 	}
@@ -208,17 +224,6 @@ namespace app {
 		SetFocus(mainWindowHandle);
 	}
 
-	// console format green
-	inline std::string logColorGreen(std::string text) {
-		return "\033[92m" + text + "\033[0m";
-	}
-
-	// log exceptions
-	void exception(std::string t) {
-		console(true);
-		std::cout << t << std::endl;
-		system("pause");
-	}
 #ifdef CB_DEBUG
 	// log events
 	void cslog(std::string base, std::string text) {
@@ -231,9 +236,16 @@ namespace app {
 	}
 #endif
 
+	// log exceptions
+	void exception(std::string text) {
+		console(true);
+		cslog("EXCEPTION", text);
+		system("pause");
+	}
+
 	// MAIN INIT
 	bool init() {
-		cslog("SYSTEM", "Initializing.");
+		cslog("SYSTEM", "Initializing");
 
 		// load resources
 		if (!load())
@@ -278,6 +290,8 @@ namespace app {
 
 	// MAIN LOOP
 	void run() {
+		host::start(); // start the host
+
 		while (mainWindow.isOpen()) {
 			// input
 			if (cursorChanged) {

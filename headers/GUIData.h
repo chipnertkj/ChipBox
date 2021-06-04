@@ -9,12 +9,18 @@
 namespace gui {
 	// ui theme
 	struct theme {
-		// background
+		// general
 		sf::Color background = sf::Color(111, 116, 125);
+		sf::Color outline = sf::Color(37, 37, 37);
+		sf::Color transparent = sf::Color(0, 0, 0, 0);
+		// misc
+		sf::Color channelMuted = sf::Color(200, 0, 0);
 		// widgets
-		sf::Color boxOutline = sf::Color(37, 37, 37);
 		sf::Color boxOutside = sf::Color(63, 66, 71);
 		sf::Color boxInside = sf::Color(102, 105, 116);
+		// progress bars
+		sf::Color progressBarBackground = sf::Color(63, 66, 71);
+		sf::Color progressBarValue = sf::Color(255, 255, 255);
 		// buttons
 		sf::Color buttonActive = sf::Color(255, 255, 255);
 		sf::Color buttonInactive = sf::Color(102, 105, 116);

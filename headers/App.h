@@ -1,6 +1,6 @@
-#ifndef APP_H
-#define APP_H
+// Application management
 
+#pragma once
 #include "GUIClasses.h"
 #include "Project.h"
 
@@ -31,6 +31,9 @@ namespace app {
 	extern sf::Texture tx_plus;
 	extern sf::Texture tx_buttonHighlightBig;
 	extern sf::Texture tx_dragHandle;
+	extern sf::Texture tx_shadow_box;
+	extern sf::Texture tx_shadow_h;
+	extern sf::Texture tx_shadow_v;
 	// fonts
 	extern sf::Font font;
 	// cursors
@@ -43,18 +46,15 @@ namespace app {
 }
 
 namespace app {
-	void windowInit(bool recreate, bool resize); // window init
+	void windowInit(bool recreate, bool resize); // window start
 	void handleEvents(); // window event handling
 	bool load(); // load resources
 	void console();
 	void console(bool visibility);
-	inline std::string logColorGreen(std::string text);
 	void cslog(std::string base, std::string text); // log events
-	void exception(const char* t); // log exceptions
+	void exception(std::string text); // log exceptions
 
 	bool init(); // MAIN INIT
 	void run();  // MAIN LOOP
 	void exit(); // MAIN EXIT
 }
-
-#endif

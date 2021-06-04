@@ -1,0 +1,39 @@
+﻿base.lib(fstring.obj) : error LNK2038: mismatch detected for '_ITERATOR_DEBUG_LEVEL': value '2' doesn't match value '0' in App.obj
+base.lib(fstring.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MDd_DynamicDebug' doesn't match value 'MD_DynamicRelease' in App.obj
+base.lib(fdebug.obj) : error LNK2038: mismatch detected for '_ITERATOR_DEBUG_LEVEL': value '2' doesn't match value '0' in App.obj
+base.lib(fdebug.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MDd_DynamicDebug' doesn't match value 'MD_DynamicRelease' in App.obj
+base.lib(baseiids.obj) : error LNK2038: mismatch detected for '_ITERATOR_DEBUG_LEVEL': value '2' doesn't match value '0' in App.obj
+base.lib(baseiids.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MDd_DynamicDebug' doesn't match value 'MD_DynamicRelease' in App.obj
+LINK : warning LNK4098: defaultlib 'MSVCRTD' conflicts with use of other libs; use /NODEFAULTLIB:library
+Host.obj : error LNK2001: unresolved external symbol "public: static class Steinberg::FUID const Steinberg::Vst::IEditController::iid" (?iid@IEditController@Vst@Steinberg@@2VFUID@3@B)
+Host.obj : error LNK2001: unresolved external symbol "public: static class Steinberg::FUID const Steinberg::Vst::IComponent::iid" (?iid@IComponent@Vst@Steinberg@@2VFUID@3@B)
+HostClasses.obj : error LNK2001: unresolved external symbol "long __cdecl Steinberg::FUnknownPrivate::atomicAdd(long &,long)" (?atomicAdd@FUnknownPrivate@Steinberg@@YAJAEAJJ@Z)
+HostClasses.obj : error LNK2001: unresolved external symbol "public: static class Steinberg::FUID const Steinberg::IPlugFrame::iid" (?iid@IPlugFrame@Steinberg@@2VFUID@2@B)
+HostClasses.obj : error LNK2001: unresolved external symbol "public: __cdecl Steinberg::FUID::FUID(void)" (??0FUID@Steinberg@@QEAA@XZ)
+HostClasses.obj : error LNK2001: unresolved external symbol "public: __cdecl Steinberg::FUID::FUID(class Steinberg::FUID &&)" (??0FUID@Steinberg@@QEAA@$$QEAV01@@Z)
+HostClasses.obj : error LNK2001: unresolved external symbol "public: __cdecl Steinberg::Vst::PlugInterfaceSupport::PlugInterfaceSupport(void)" (??0PlugInterfaceSupport@Vst@Steinberg@@QEAA@XZ)
+HostClasses.obj : error LNK2001: unresolved external symbol "public: static class Steinberg::FUID const Steinberg::Vst::IHostApplication::iid" (?iid@IHostApplication@Vst@Steinberg@@2VFUID@3@B)
+HostClasses.obj : error LNK2001: unresolved external symbol "public: virtual class Steinberg::Vst::IAttributeList * __cdecl Steinberg::Vst::HostMessage::getAttributes(void)" (?getAttributes@HostMessage@Vst@Steinberg@@UEAAPEAVIAttributeList@23@XZ)
+HostClasses.obj : error LNK2001: unresolved external symbol "public: virtual void __cdecl Steinberg::Vst::HostMessage::setMessageID(char const *)" (?setMessageID@HostMessage@Vst@Steinberg@@UEAAXPEBD@Z)
+HostClasses.obj : error LNK2001: unresolved external symbol "public: virtual char const * __cdecl Steinberg::Vst::HostMessage::getMessageID(void)" (?getMessageID@HostMessage@Vst@Steinberg@@UEAAPEBDXZ)
+HostClasses.obj : error LNK2001: unresolved external symbol "public: virtual __cdecl Steinberg::Vst::HostMessage::~HostMessage(void)" (??1HostMessage@Vst@Steinberg@@UEAA@XZ)
+HostClasses.obj : error LNK2001: unresolved external symbol "public: __cdecl Steinberg::Vst::HostMessage::HostMessage(void)" (??0HostMessage@Vst@Steinberg@@QEAA@XZ)
+HostClasses.obj : error LNK2001: unresolved external symbol "public: static class Steinberg::FUID const Steinberg::Vst::IAttributeList::iid" (?iid@IAttributeList@Vst@Steinberg@@2VFUID@3@B)
+HostClasses.obj : error LNK2001: unresolved external symbol "public: static class Steinberg::FUID const Steinberg::Vst::IMessage::iid" (?iid@IMessage@Vst@Steinberg@@2VFUID@3@B)
+HostClasses.obj : error LNK2001: unresolved external symbol "public: virtual long __cdecl Steinberg::Vst::HostAttributeList::getBinary(char const *,void const * &,unsigned long &)" (?getBinary@HostAttributeList@Vst@Steinberg@@UEAAJPEBDAEAPEBXAEAK@Z)
+HostClasses.obj : error LNK2001: unresolved external symbol "public: virtual long __cdecl Steinberg::Vst::HostAttributeList::setBinary(char const *,void const *,unsigned long)" (?setBinary@HostAttributeList@Vst@Steinberg@@UEAAJPEBDPEBXK@Z)
+HostClasses.obj : error LNK2001: unresolved external symbol "public: virtual long __cdecl Steinberg::Vst::HostAttributeList::getString(char const *,wchar_t *,unsigned long)" (?getString@HostAttributeList@Vst@Steinberg@@UEAAJPEBDPEA_WK@Z)
+HostClasses.obj : error LNK2001: unresolved external symbol "public: virtual long __cdecl Steinberg::Vst::HostAttributeList::setString(char const *,wchar_t const *)" (?setString@HostAttributeList@Vst@Steinberg@@UEAAJPEBDPEB_W@Z)
+HostClasses.obj : error LNK2001: unresolved external symbol "public: virtual long __cdecl Steinberg::Vst::HostAttributeList::getFloat(char const *,double &)" (?getFloat@HostAttributeList@Vst@Steinberg@@UEAAJPEBDAEAN@Z)
+HostClasses.obj : error LNK2001: unresolved external symbol "public: virtual long __cdecl Steinberg::Vst::HostAttributeList::setFloat(char const *,double)" (?setFloat@HostAttributeList@Vst@Steinberg@@UEAAJPEBDN@Z)
+HostClasses.obj : error LNK2001: unresolved external symbol "public: virtual long __cdecl Steinberg::Vst::HostAttributeList::getInt(char const *,__int64 &)" (?getInt@HostAttributeList@Vst@Steinberg@@UEAAJPEBDAEA_J@Z)
+HostClasses.obj : error LNK2001: unresolved external symbol "public: virtual long __cdecl Steinberg::Vst::HostAttributeList::setInt(char const *,__int64)" (?setInt@HostAttributeList@Vst@Steinberg@@UEAAJPEBD_J@Z)
+HostClasses.obj : error LNK2001: unresolved external symbol "public: virtual __cdecl Steinberg::Vst::HostAttributeList::~HostAttributeList(void)" (??1HostAttributeList@Vst@Steinberg@@UEAA@XZ)
+HostClasses.obj : error LNK2001: unresolved external symbol "public: __cdecl Steinberg::Vst::HostAttributeList::HostAttributeList(void)" (??0HostAttributeList@Vst@Steinberg@@QEAA@XZ)
+HostClasses.obj : error LNK2001: unresolved external symbol "public: static class Steinberg::FUID const Steinberg::Vst::IComponentHandler::iid" (?iid@IComponentHandler@Vst@Steinberg@@2VFUID@3@B)
+HostClasses.obj : error LNK2001: unresolved external symbol "public: static class Steinberg::FUID const Steinberg::Vst::IUnitHandler::iid" (?iid@IUnitHandler@Vst@Steinberg@@2VFUID@3@B)
+HostClasses.obj : error LNK2001: unresolved external symbol "public: static class Steinberg::FUID const Steinberg::FUnknown::iid" (?iid@FUnknown@Steinberg@@2VFUID@2@B)
+base.lib(fstring.obj) : error LNK2001: unresolved external symbol __imp__free_dbg
+base.lib(fstring.obj) : error LNK2001: unresolved external symbol __imp__malloc_dbg
+base.lib(fstring.obj) : error LNK2001: unresolved external symbol __imp__realloc_dbg
+C:\Projects\ChipBox\build\release\64-bit\ChipBox.exe : fatal error LNK1120: 31 unresolved externals
