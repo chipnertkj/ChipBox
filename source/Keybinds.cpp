@@ -73,7 +73,7 @@ namespace input {
 		switch (command) {
 		default: break;
 		case cmd::addChannel:
-			proj::project.addChannel("Channel " + std::to_string(proj::project.channels.size()));
+			proj::project.addChannel("Channel " + std::to_string(proj::project.channels.size()), proj::ChannelType::empty);
 			return true;
 		case cmd::fullscreen:
 			app::fullscreen = !app::fullscreen;

@@ -104,6 +104,7 @@
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\Project.cpp" />
     <ClCompile Include="source\ProjectClasses.cpp" />
+    <ClCompile Include="source\ProjectData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\App.h" />
@@ -118,6 +119,7 @@
     <ClInclude Include="headers\Keybinds.h" />
     <ClInclude Include="headers\Project.h" />
     <ClInclude Include="headers\ProjectClasses.h" />
+    <ClInclude Include="headers\ProjectData.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\images\.32.png" />

@@ -1,2 +1,21 @@
-﻿  Host.cpp
-  ChipBox.vcxproj -> C:\Projects\ChipBox\build\debug\ChipBox.exe
+﻿  ProjectClasses.cpp
+C:\Projects\ChipBox\source\ProjectClasses.cpp(17,49): warning C4244: '=': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Projects\ChipBox\source\ProjectClasses.cpp(37,65): warning C4244: '=': conversion from 'unsigned __int64' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Projects\ChipBox\source\ProjectClasses.cpp(50,57): warning C4267: 'argument': conversion from 'size_t' to '_Ty', possible loss of data
+          with
+          [
+              _Ty=unsigned int
+          ]
+  ProjectData.cpp
+  Generating Code...
+Project.obj : error LNK2019: unresolved external symbol "public: __cdecl proj::Project::Project(void)" (??0Project@proj@@QEAA@XZ) referenced in function "void __cdecl proj::`dynamic initializer for 'project''(void)" (??__Eproject@proj@@YAXXZ)
+ProjectClasses.obj : error LNK2019: unresolved external symbol "public: __cdecl proj::InstrumentSynth::InstrumentSynth(class proj::Channel *,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >)" (??0InstrumentSynth@proj@@QEAA@PEAVChannel@1@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z) referenced in function "public: class proj::Instrument * __cdecl proj::Channel::addInstrument(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >)" (?addInstrument@Channel@proj@@QEAAPEAVInstrument@2@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
+C:\Projects\ChipBox\build\debug\ChipBox.exe : fatal error LNK1120: 2 unresolved externals

@@ -53,9 +53,7 @@ namespace app {
 	sf::Cursor cursor_sizeV;
 	sf::Cursor cursor_text;
 	sf::Cursor cursor_tleftbright;
-}
 
-namespace app {
 	// window start + resizing
 	void windowInit(bool recreate, bool resize) {
 		sf::VideoMode vm;

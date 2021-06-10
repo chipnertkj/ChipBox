@@ -1,4 +1,5 @@
 #include "GUI.h" // interface
+
 #include "App.h"
 #include "GUIData.h"
 #include "GUIUtility.h"
@@ -93,7 +94,7 @@ namespace gui {
 		// buttons
 		if (wd_addbox.buttons[0]->check(mouse.x, mouse.y))
 			if (input::onClick()) {
-				proj::project.addChannel("Channel " + std::to_string(proj::project.channels.size()));
+				proj::project.addChannel("Channel " + std::to_string(proj::project.channels.size()), proj::ChannelType::empty);
 			}
 		wd_addbox.buttons[0]->animate();
 

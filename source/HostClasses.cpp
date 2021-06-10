@@ -10,6 +10,8 @@ namespace host {
 	namespace St = Steinberg;
 	namespace Vst = Steinberg::Vst;
 
+
+	the hell?? somethings wrong here \/\/\/
 	//---------------------------------------------------------
 	// AttributeList
 	class HostAttribute
