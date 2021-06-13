@@ -225,7 +225,7 @@ namespace app {
 #ifdef CB_DEBUG
 	// log events
 	void cslog(std::string base, std::string text) {
-		std::cout << "[" << base << "] " << text << std::endl;
+		std::cout << "[" + base + "] " + text + "\n";
 	}
 #else
 	// log events
@@ -323,6 +323,7 @@ namespace app {
 	void exit() {
 #ifdef _DEBUG // show cmd in debug
 		ShowWindow(GetConsoleWindow(), SW_SHOW);
+		SetFocus(GetConsoleWindow());
 #endif
 	}
 }
