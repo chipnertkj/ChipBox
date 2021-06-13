@@ -71,7 +71,7 @@ namespace input {
 		}
 
 		switch (command) {
-		default: break;
+		default: return false;
 		case cmd::addChannel:
 			proj::project.addChannel("Channel " + std::to_string(proj::project.channels.size()), proj::ChannelType::empty);
 			return true;
@@ -83,7 +83,7 @@ namespace input {
 			app::console();
 			return true;
 		case cmd::scaleDown:
-			gui::cs = gui::scaling(std::max(0.5f, gui::cs.scale - 0.1f));
+			gui::cs = gui::scaling(std::max(0.8f, gui::cs.scale - 0.1f));
 			gui::init(false, true);
 			return true;
 		case cmd::scaleUp:
@@ -97,7 +97,5 @@ namespace input {
 			proj::project.setSongLength(proj::project.getSongLength() + 1U);
 			return true;
 		}
-
-		return false;
 	}
 }

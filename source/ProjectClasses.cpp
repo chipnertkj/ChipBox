@@ -103,7 +103,6 @@ namespace proj {
 		name = _name;
 		// load default chips
 		loadBank("default");
-		loadChip("square"); // testing
 
 		// init parameters
 		params.gain		= new Parameter<double>(this, "Gain", 0, 0, 1);
@@ -197,18 +196,14 @@ namespace proj {
 			unsigned int lineLastEnd = 1;
 
 			std::string name = "";
-			unsigned int ccount = 0;
 			unsigned int scount = 0;
 			double srange = 0;
 			bool skip = false;
 			while (std::getline(bankFile, text)) {
-				if (line == 2) {
-					std::stringstream(text) >> ccount;
-					lineLastEnd = line;
-				}
 				if (line == lineLastEnd + 2) {
 					chip = new Chip();
 					name = text;
+
 					if (chips.find(name) != chips.end()) {
 						app::cslog("LOADING CHIP", name + " already loaded!");
 						skip = true;
@@ -218,27 +213,26 @@ namespace proj {
 						app::cslog("LOADING CHIP", "Loading " + name);
 					}
 				}
-				if (line == lineLastEnd + 3)
-					if (!skip) {
-						std::stringstream(text) >> scount;
-						chip->allocate(scount);
-					}
-				if (line == lineLastEnd + 4)
+				if (line == lineLastEnd + 3) {
+					std::stringstream(text) >> scount;
 					if (!skip)
+						chip->allocate(scount);
+				}
+				if (line == lineLastEnd + 4)
 						std::stringstream(text) >> srange;
 				if (line >= lineLastEnd + 6) {
-					if (!skip) {
-						if (line - lineLastEnd - 6 < scount) {
+					if (line - lineLastEnd - 6 < scount-1) {
+						if (!skip) {
 							std::stringstream(text) >> chip->samples[line - lineLastEnd - 6];
 							chip->samples[line - lineLastEnd - 6] /= srange;
-							app::cslog("", std::to_string(chip->samples[line - lineLastEnd - 6]));
 						}
-						else {
+					}
+					else {
+						if (!skip) {
 							app::cslog("LOADING CHIP", "Loaded " + name + " from " + _name + bankExt);
-							lineLastEnd = line-1;
 							chips[name] = chip;
-							chip = new Chip();
 						}
+						lineLastEnd = line;
 					}
 				}
 				line++;

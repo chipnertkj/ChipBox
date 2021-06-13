@@ -118,7 +118,7 @@ namespace gui {
 		shadow.setPosition(pos);
 		sf::Vector2u tsize = shadow.getTexture()->getSize();
 		shadow.setScale(size.x/tsize.x, size.y/tsize.y);
-		shadow.setColor(sf::Color(255, 255, 255, 128));
+		shadow.setColor(sf::Color(255, 255, 255, 255));
 	}
 	void ProgressBar::draw(sf::RenderTarget& target) {
 		bg.draw(target);
@@ -156,7 +156,7 @@ namespace gui {
 		shadow.setPosition(pos);
 		sf::Vector2u tsize = shadow.getTexture()->getSize();
 		shadow.setScale(size.x / tsize.x, size.y / tsize.y);
-		shadow.setColor(sf::Color(255, 255, 255, 128));
+		shadow.setColor(sf::Color(255, 255, 255, 255));
 	}
 	void Checkbox::draw(sf::RenderTarget& target) {
 		bg.draw(target);

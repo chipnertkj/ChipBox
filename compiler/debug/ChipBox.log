@@ -1,2 +1,17 @@
-﻿  App.cpp
+﻿  ProjectClasses.cpp
+C:\Projects\ChipBox\source\ProjectClasses.cpp(24,49): warning C4244: '=': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Projects\ChipBox\source\ProjectClasses.cpp(44,65): warning C4244: '=': conversion from 'unsigned __int64' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Projects\ChipBox\source\ProjectClasses.cpp(57,57): warning C4267: 'argument': conversion from 'size_t' to '_Ty', possible loss of data
+          with
+          [
+              _Ty=unsigned int
+          ]
   ChipBox.vcxproj -> C:\Projects\ChipBox\build\debug\ChipBox.exe
