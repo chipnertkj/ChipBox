@@ -24,6 +24,8 @@ namespace gui {
 		// buttons
 		sf::Color buttonActive = sf::Color(255, 255, 255);
 		sf::Color buttonInactive = sf::Color(102, 105, 116);
+		// modules
+		sf::Color moduleBg = sf::Color(111, 116, 125);
 
 		theme();
 		theme(std::string name);
@@ -38,14 +40,9 @@ namespace gui {
 		static const int patConst = 30;
 		static const int patSpaceConst = 3;
 
-		int boxBoundsScaled = boxConst;
-
-		int boxW = boxConst;
-		int boxH = boxConst;
-		int space = spaceConst;
-		int pat = patConst;
-		int patSpace = patSpaceConst;
-		int patFull = pat + patSpace;
+		int boxBoundsScaled,
+			topH, boxW, boxH,
+			space, modSpace, pat, patSpace, patFull;
 
 		scaling(float _scale);
 	};

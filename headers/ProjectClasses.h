@@ -5,7 +5,11 @@
 #include <string>
 #include <map>
 
+
 namespace proj {
+	// TODO: fix protected
+
+
 	// TODO: timestamp for audio processing
 	struct chunk {
 		unsigned int timelineSlot = 0U;
@@ -46,6 +50,10 @@ namespace proj {
 		T set(T _value) {
 			value = std::max(min, std::min(max, value));
 		}
+
+		T get() {
+			return value;
+		}
 	};
 
 	// A boolean Parameter
@@ -58,18 +66,45 @@ namespace proj {
 
 		Switch(std::string _name, bool _value);
 		bool set(bool _value);
+		bool get() { return value; }
 	};
 
 	class Chip {
-	private:
-		unsigned int count = 0;
+	protected:
+		enum class types {
+			none,
+			sampled,	// uses preloaded chip samples
+			automated,	// generates chip samples
+		};
 	public:
-		double* samples = NULL;
-		void save(std::string name);
-		void allocate(unsigned int _count);
-		void deallocate(unsigned int _count);
+		virtual void save(std::string name) = NULL;
+		virtual types getType() { return types::sampled; }
 	};
 
+	class ChipSampled : public Chip {
+	protected:
+		unsigned int sampleCount = 0;
+	public:
+		double* samples = NULL;
+		void allocate(unsigned int _count);
+		void deallocate(unsigned int _count);
+		void save(std::string name) override final;
+		types getType() override final { return types::sampled; }
+	};
+
+	class ChipAutomated : public Chip {
+	protected:
+		struct point { unsigned int x = 0, y = 0; };
+		unsigned int pointCount = 0;
+	public:
+		point* points = NULL;
+		void allocate(unsigned int _count);
+		void deallocate(unsigned int _count);
+		void save(std::string name) override final;
+		types getType() override final { return types::automated; }
+
+	};
+	
 	// Instrument base class
 	// For general audio processing
 	class Instrument {
@@ -148,7 +183,7 @@ namespace proj {
 		void load(std::string _path); // load project
 		void create(); // create clean project
 
-		unsigned int getSongLength();
+		unsigned int getSongLength() { return songLength; }
 		void setSongLength(unsigned int _length);
 
 		Channel* addChannel(std::string _name, ChannelType _type);

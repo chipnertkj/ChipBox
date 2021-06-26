@@ -6,9 +6,6 @@
 #include <Windows.h>
 #include <iostream>
 
-// #define CB_DEBUG enables debug logging
-#define CB_DEBUG
-
 namespace app {
 	/// window
 	std::string windowName = std::string("ChipBox | ") + __TIME__ + ", " + __DATE__;
@@ -28,6 +25,7 @@ namespace app {
 	sf::Vector2i posNonFullscreen = sf::Vector2i(-100000, -100000);
 	sf::Clock clock; // dt timer
 	float dt = 1;
+	double elapsed = 0.f;
 
 	/// shaders
 	sf::Shader shaderH;
@@ -222,17 +220,9 @@ namespace app {
 		SetFocus(mainWindowHandle);
 	}
 
-#ifdef CB_DEBUG
-	// log events
-	void cslog(std::string base, std::string text) {
+	void dcslog(std::string base, std::string text) {
 		std::cout << "[" + base + "] " + text + "\n";
 	}
-#else
-	// log events
-	void cslog(std::string base, std::string text) {
-		return;
-	}
-#endif
 
 	// log exceptions
 	void exception(std::string text) {
@@ -270,6 +260,9 @@ namespace app {
 		loadingWindow.draw(text);
 		loadingWindow.display();
 
+		// load default chip bank
+		proj::InstrumentSynth::loadBank("default");
+
 		// load vsts
 
 		// close loading window
@@ -279,7 +272,7 @@ namespace app {
 		gui::setup();
 		windowInit(true, false);
 
-#if defined(NDEBUG) || !defined(CB_DEBUG) // hide cmd in release and when logging is disabled
+#if defined(NDEBUG) // hide cmd in release and when logging is disabled
 		console(false);
 #endif
 
@@ -315,6 +308,7 @@ namespace app {
 
 			// timing
 			dt = clock.getElapsedTime().asSeconds();
+			elapsed += dt;
 			clock.restart();
 		}
 	}

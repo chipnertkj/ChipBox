@@ -18,6 +18,8 @@ namespace app {
 	extern sf::VideoMode display; // display resolution
 	extern bool fullscreen;
 	extern bool cursorChanged;
+	extern float dt;
+	extern double elapsed;
 
 	/// shaders
 	extern sf::Shader shaderH;
@@ -51,10 +53,17 @@ namespace app {
 	bool load(); // load resources
 	void console();
 	void console(bool visibility);
-	void cslog(std::string base, std::string text); // log events
+	void dcslog(std::string base, std::string text);
 	void exception(std::string text); // log exceptions
 
 	bool init(); // MAIN INIT
 	void run();  // MAIN LOOP
 	void exit(); // MAIN EXIT
 }
+
+// log events
+#if 1
+#define cslog(base, text) app::dcslog(base, text)
+#else
+#define cslog(base, text)
+#endif

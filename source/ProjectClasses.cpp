@@ -12,16 +12,9 @@ namespace proj {
 
 	}
 
-	unsigned int Project::getSongLength() {
-		return songLength;
-	}
-
 	void Project::setSongLength(unsigned int _length) {
 		// set
 		songLength = _length;
-		// gui update
-		gui::channels.recalculate();
-		gui::channels.scrollPanel->scroll.x = _length + 1U;
 		// add missing slots
 		while (_length > project.channels[0]->slots.size()) {
 			for (auto it : project.channels)
@@ -32,10 +25,13 @@ namespace proj {
 			for (auto it : project.channels)
 				it->slots.pop_back();
 		}
+		// gui update
+		gui::channels.recalculate();
+		gui::channels.scrollPanel->scroll.x = _length + 1U;
 	}
 
 	Channel* Project::addChannel(std::string _name, ChannelType _type) {
-		app::cslog("PROJECT", "Adding channel \"" + _name + "\"");
+		cslog("PROJECT", "Adding channel \"" + _name + "\"");
 		// add channel to project
 		Channel* channel = new Channel(_name, _type, songLength);
 		channels.push_back(channel);
@@ -74,16 +70,30 @@ namespace proj {
 	}
 
 	//---------------------------------------------------------
-	// Chip
-	void Chip::allocate(unsigned int _count) {
+	// ChipSampled
+	void ChipSampled::allocate(unsigned int _count) {
 		samples = new double[_count];
-		count = _count;
+		sampleCount = _count;
 	}
-	void Chip::deallocate(unsigned int _count) {
+	void ChipSampled::deallocate(unsigned int _count) {
 		delete[] samples;
-		count = 0;
+		sampleCount = 0;
 	}
-	void Chip::save(std::string name) {
+	void ChipSampled::save(std::string name) {
+
+	}
+
+	//---------------------------------------------------------
+	// ChipAutomated
+	void ChipAutomated::allocate(unsigned int _count) {
+		points = new point[_count];
+		pointCount = _count;
+	}
+	void ChipAutomated::deallocate(unsigned int _count) {
+		delete[] points;
+		pointCount = 0;
+	}
+	void ChipAutomated::save(std::string name) {
 
 	}
 
@@ -101,8 +111,6 @@ namespace proj {
 		// setup
 		channel = _channel;
 		name = _name;
-		// load default chips
-		loadBank("default");
 
 		// init parameters
 		params.gain		= new Parameter<double>(this, "Gain", 0, 0, 1);
@@ -114,18 +122,23 @@ namespace proj {
 
 	/*
 		Serialized Chip structure:
+		1	-			empty line
 		2	- (uint)	sample count
 		3	- (double)	sample range
+		4	-			empty line
 		5+	- (double)	data
+
+		Empty lines can be used as places for comments.
 	*/
 	
 	void InstrumentSynth::loadChip(std::string _name, bool _custom) {
+		// TODO: add automated chip loading
 		if (chips.find(_name) != chips.end()) {
-			app::cslog("LOADING CHIP", _name + " already loaded!");
+			cslog("LOADING CHIP", _name + " already loaded!");
 			return;
 		}
 
-		Chip* chip = NULL;
+		ChipSampled* chip = NULL;
 
 		std::string path;
 		if (_custom)
@@ -134,13 +147,13 @@ namespace proj {
 			path = defaultChipPath;
 		path += _name + chipExt;
 
-		app::cslog("LOADING CHIP", "Loading " + _name);
+		cslog("LOADING CHIP", "Loading " + _name);
 		std::ifstream chipFile(path);
 		if (chipFile.is_open()) {
 			std::string text = "";
 			unsigned int line = 1;
 
-			chip = new Chip();
+			chip = new ChipSampled();
 			unsigned int count = 0;
 			double range = 0;
 			while (std::getline(chipFile, text)) {
@@ -153,33 +166,36 @@ namespace proj {
 				if (line > 4) {
 					std::stringstream(text) >> chip->samples[line - 5];
 					chip->samples[line - 5] /= range;
-					app::cslog("", std::to_string(chip->samples[line - 5]));
+					cslog("", std::to_string(chip->samples[line - 5]));
 				}
 				line++;
 			}
-			app::cslog("LOADING CHIP", "Loaded from " + path);
+			cslog("LOADING CHIP", "Loaded from " + path);
 		}
 		else
-			app::cslog("LOADING CHIP", "Failed to load from " + path);
+			cslog("LOADING CHIP", "Failed to load from " + path);
 
-		chips[_name] = chip;
+		chips[_name] = (Chip*)chip;
 	}
 
 	/*
 		Serialized Bank structure:
-		2		- (uint)	number of chips
-		+ 1		-			empty line
+		1-2		-			empty line
 		+ 1		- (string)	chip name
 		+ 1		- (uint)	sample count
 		+ 1		- (double)	sample range
+		+ 1		-			empty line
 		+ 1+	- (double)	data
 		+ 1		-			empty line
 		+ 1		- (string)	chip name
+		+ 1		- (uint)	sample count
 		...
+
+		Empty lines can be used as places for comments.
 	*/
 
 	void InstrumentSynth::loadBank(std::string _name, bool _custom) {
-		Chip* chip = NULL;
+		ChipSampled* chip = NULL;
 
 		std::string path;
 		if (_custom)
@@ -188,7 +204,7 @@ namespace proj {
 			path = defaultChipPath;
 		path += _name + bankExt;
 
-		app::cslog("LOADING BANK", "Loading " + _name);
+		cslog("LOADING BANK", "Loading " + _name);
 		std::ifstream bankFile(path);
 		if (bankFile.is_open()) {
 			std::string text = "";
@@ -201,16 +217,16 @@ namespace proj {
 			bool skip = false;
 			while (std::getline(bankFile, text)) {
 				if (line == lineLastEnd + 2) {
-					chip = new Chip();
+					chip = new ChipSampled();
 					name = text;
 
 					if (chips.find(name) != chips.end()) {
-						app::cslog("LOADING CHIP", name + " already loaded!");
+						cslog("LOADING CHIP", name + " already loaded!");
 						skip = true;
 					}
 					else {
 						skip = false;
-						app::cslog("LOADING CHIP", "Loading " + name);
+						cslog("LOADING CHIP", "Loading " + name);
 					}
 				}
 				if (line == lineLastEnd + 3) {
@@ -229,7 +245,7 @@ namespace proj {
 					}
 					else {
 						if (!skip) {
-							app::cslog("LOADING CHIP", "Loaded " + name + " from " + _name + bankExt);
+							cslog("LOADING CHIP", "Loaded " + name + " from " + _name + bankExt);
 							chips[name] = chip;
 						}
 						lineLastEnd = line;
@@ -237,10 +253,10 @@ namespace proj {
 				}
 				line++;
 			}
-			app::cslog("LOADING BANK", "Loaded from " + path);
+			cslog("LOADING BANK", "Loaded from " + path);
 		}
 		else
-			app::cslog("LOADING BANK", "Failed to load from " + path);
+			cslog("LOADING BANK", "Failed to load from " + path);
 	}
 
 	void InstrumentSynth::process(chunk _chunk) {

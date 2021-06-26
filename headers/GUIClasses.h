@@ -5,7 +5,23 @@
 
 #include <SFML/Graphics.hpp>
 
+#define EMPTY(x) void update() x; void draw(sf::RenderTarget& target) x;
+#define EMPTY_I void update(); void draw(sf::RenderTarget& target);
+
 namespace gui {
+	class Render {
+	public:
+		sf::Vector2f pos = { 0, 0 };
+
+		sf::RenderTexture texture;
+		sf::Sprite sprite;
+
+		void clear(sf::Color col = sf::Color());
+		void create(unsigned int w, unsigned int h);
+		void display();
+		EMPTY_I
+	};
+
 	class Empty {
 	public:
 		sf::Vector2f pos = { 0, 0 };
@@ -35,8 +51,7 @@ namespace gui {
 
 		void setColor(sf::Color col);
 
-		void update() override final;
-		inline void draw(sf::RenderTarget& target) override final;
+		EMPTY(override final)
 	};
 
 	class RectangleOut : public Empty {
@@ -51,8 +66,7 @@ namespace gui {
 
 		void setColor(sf::Color col);
 
-		void update() override final;
-		inline void draw(sf::RenderTarget& target) override final;
+		EMPTY(override final)
 	};
 	
 	class ProgressBar : public Empty {
@@ -73,8 +87,7 @@ namespace gui {
 		void setTextures(sf::Texture& tx1);
 		void updateValue();
 
-		void draw(sf::RenderTarget& target) override final;
-		void update() override final;
+		EMPTY(override final)
 	};
 
 	class Checkbox : public Empty {
@@ -83,7 +96,6 @@ namespace gui {
 		Rectangle val;
 		RectangleOut out;
 		sf::Sprite shadow;
-
 	public:
 		sf::Color* color = NULL;
 
@@ -93,8 +105,7 @@ namespace gui {
 		void updateValue();
 		void check(int mx, int my);
 
-		void draw(sf::RenderTarget& target) override final;
-		void update() override final;
+		EMPTY(override final)
 	};
 
 	class Button : public Empty {
@@ -107,8 +118,8 @@ namespace gui {
 		float alpha = 0.f;
 		sf::Vector2f defScale;
 
-		sf::Sprite& getSprite();
-		sf::Sprite& getHighlight();
+		sf::Sprite& getSprite() { return sprite; }
+		sf::Sprite& getHighlight() { return highlight; }
 
 		void setTextures(sf::Texture& tx1, sf::Texture& tx2);
 		bool check(int mx, int my);
@@ -116,14 +127,34 @@ namespace gui {
 		virtual void setScale(float sx, float sy) = NULL;
 		virtual void animate() = NULL;
 
-		void update() override final;
-		void draw(sf::RenderTarget& target) override final;
+		EMPTY(override final)
 	};
 
 	class ButtonBig : public Button {
 	public:
 		void setScale(float sx, float sy) override final;
 		void animate() override final;
+	};
+
+	class Graph : public Empty {
+	private:
+		Rectangle bg;
+		Rectangle front;
+		RectangleOut bgOut;
+		RectangleOut frontOut;
+		sf::Sprite shadow;
+		sf::Vertex* line;
+		sf::Vector2f* points;
+		unsigned int pointCount = 0;
+	public:
+		void setTextures(sf::Texture& tx1);
+		void createLine(unsigned int _pointCount);
+		void updateLine();
+		void setPoint(unsigned int _point, float _x, float _y);
+		sf::Vector2f getPoint(unsigned int _point) { return points[_point]; }
+		unsigned int getPointCount() { return pointCount; }
+
+		EMPTY(override final)
 	};
 
 	class ScrollPanel : public Empty {
@@ -152,10 +183,9 @@ namespace gui {
 		void clear(sf::Color color = sf::Color());
 		void check(int mx, int my);
 		void clamp();
-		sf::RenderTexture& getTexture();
+		sf::RenderTexture& getTexture() { return texture; }
 
-		void update() override final;
-		inline void draw(sf::RenderTarget& target) override final;
+		EMPTY(override final)
 	};
 
 	class Widget : public Empty {
@@ -197,11 +227,10 @@ namespace gui {
 		void handlesSetup();
 		void createScrollPanel();
 		void setHandlesScale(float sx, float sy);
-		sf::Vector2f getInsidePos();
-		sf::Vector2f getInsideSize();
+		sf::Vector2f getInsidePos() { return front.pos; }
+		sf::Vector2f getInsideSize() { return front.size; }
 
-		void update() override final;
-		void draw(sf::RenderTarget& target) override final;
+		EMPTY(override final)
 	};
 
 	class Channels {
@@ -211,33 +240,27 @@ namespace gui {
 		RectangleOut* rectOut = NULL;
 		sf::Text* text = NULL;
 		
-		Rectangle bar;
 		ProgressBar* volume = NULL;
 		Checkbox* muted = NULL;
 
 		// slot count (optimization)
-		unsigned int width = 0u;
-		unsigned int height = 0u;
+		unsigned int width = 0u, height = 0u;
+		unsigned int lastx = 0u, lasty = 0u;
 	public:
-		int scale = cs.patFull; // scroll scale
 		ScrollPanel* scrollPanel = NULL; // for scroll state access
+		Render renderRect, renderText, renderBar;
 
-		void recalculate(); // recalculates and allocates required memory for slot caching (optimization)
+		void recalculate(bool rescale = false); // recalculates and allocates required memory for slot caching (optimization)
 		void refresh(); // sets pattern slot numbers according to current scroll
+		void updateChannels(); // rearranges rects and text
+		void check(int mx, int my);
 
-		void update();
-		void draw(sf::RenderTarget& target);
+		EMPTY_I
+	protected:
+		void cacheRects();
+		void cacheText();
+		void cacheBar();
+
+		const sf::BlendMode textBlendMode = sf::BlendMode(sf::BlendMode::One, sf::BlendMode::DstColor);
 	};
-
-	class Render {
-	public:
-		sf::RenderTexture texture;
-		sf::Sprite sprite;
-
-		void clear(sf::Color col = sf::Color());
-		void create(unsigned int w, unsigned int h);
-		void display();
-		inline void draw(sf::RenderTarget& target);
-	};
-
 }

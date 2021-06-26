@@ -8,36 +8,39 @@
 #include <algorithm>
 
 namespace gui {
-	// gui resizing
+	/// gui resizing
 	bool cursorDragStarted = false;
 	bool guiScalingStarted = false;
 
-
-	// ui elements
+	/// ui elements
 	Widget wd_addbox;
 	Widget wd_channels;
+	Widget wd_instruments;
 	Channels channels;
-	ProgressBar bar;
 }
 
 namespace gui {
 	// one-time setup
 	void setup() {
+		/// ui elements
 		/// wd_addbox
-		wd_addbox.addButton(new ButtonBig);
 		wd_addbox.handlesSetup();
+		wd_addbox.addButton(new ButtonBig);
 		wd_addbox.buttons[0]->setTextures(app::tx_plus, app::tx_buttonHighlightBig);
 		/// wd_channels
 		wd_channels.handlesSetup();
 		wd_channels.createScrollPanel();
 		// channels
 		channels.scrollPanel = wd_channels.scrollPanel;
-		channels.scrollPanel->scrollScale = &channels.scale;
+		channels.scrollPanel->scrollScale = &cs.patFull;
+
+		/// wd_instruments
+		wd_instruments.handlesSetup();
 	}
 
 	// GUI scaling
 	void init(bool resize, bool recreate) {
-		app::cslog("GUI", "Adjusting widgets to scaling.");
+		cslog("GUI", "Adjusting widgets to scaling.");
 
 		/// cs
 		cs.boxW = std::max(cs.boxBoundsScaled, std::min((int)app::res.width - cs.boxBoundsScaled, cs.boxW));
@@ -78,17 +81,35 @@ namespace gui {
 			wd_channels.scrollPanel->create();
 		/// channels
 		if (recreate)
-			channels.recalculate();
+			channels.recalculate(true);
+		channels.updateChannels();
+
+		/// wd_instruments
+		wd_instruments.set(
+			(float)app::res.width - cs.boxW, float((proj::project.channels.size() == 0U) ? app::res.height : cs.topH),
+			(float)cs.boxW, (float)app::res.height - (float)cs.boxH - (float)cs.topH
+		);
+		// handles
+		wd_instruments.setHandlesScale(cs.scale, cs.scale);
+		// finish
+		wd_instruments.checkLeft = true;
+		wd_instruments.checkTop = false;
+		wd_instruments.bottom = 1.f;
+		wd_instruments.round();
+		wd_instruments.update();
 	}
 
 	// GUI loop
 	void update() {
+		// temp
+		float v = 0.f;
 		// mouse pos
 		sf::Vector2i mouse = sf::Mouse::getPosition(app::mainWindow);
 
 		/// gui resizing
 		wd_addbox.check(mouse.x, mouse.y);
 		wd_channels.check(mouse.x, mouse.y);
+		wd_instruments.check(mouse.x, mouse.y);
 
 		/// wd_addbox
 		// buttons
@@ -100,7 +121,7 @@ namespace gui {
 
 		/// wd_channels
 		// approach
-		float v = float((proj::project.channels.size() == 0U) ? app::res.height : (app::res.height - cs.boxH));
+		v = float((proj::project.channels.size() == 0U) ? app::res.height : (app::res.height - cs.boxH));
 		wd_channels.pos.y = std::floor(approach(wd_channels.pos.y, v, std::abs(wd_channels.pos.y - v)/5.f)*100.f)/100.f;
 		wd_channels.scrollPanel->set(wd_channels.getInsidePos(), wd_channels.getInsideSize());
 		wd_channels.update();
@@ -110,7 +131,13 @@ namespace gui {
 		wd_channels.scrollPanel->smooth();
 		// channels
 		channels.update();
-		channels.refresh(); // TODO: (OPTIMIZATION, 26%) use only when necessary
+		channels.updateChannels();
+
+		/// wd_instruments
+		// approach
+		v = float((proj::project.channels.size() == 0U) ? app::res.height : cs.topH);
+		wd_instruments.pos.y = std::floor(approach(wd_instruments.pos.y, v, std::abs(wd_instruments.pos.y - v) / 5.f) * 100.f) / 100.f;
+		wd_instruments.update();
 	}
 
 	// GUI rendering
@@ -119,6 +146,8 @@ namespace gui {
 		app::mainWindow.clear(th.background);
 		app::mainRender.clear(th.background);
 
+		/// wd_instruments
+		wd_instruments.draw(app::mainRender.texture);
 		/// wd_channels
 		// clear
 		wd_channels.scrollPanel->clear(th.boxInside);

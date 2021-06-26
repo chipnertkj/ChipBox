@@ -65,7 +65,7 @@ namespace gui {
 	//---------------------------------------------------------
 	// RectangleOut
 	void RectangleOut::update() {
-		vert[0].position.x = pos.x-1;			vert[0].position.y = pos.y;
+		vert[0].position.x = pos.x - 1;			vert[0].position.y = pos.y;
 		vert[1].position.x = pos.x + size.x;	vert[1].position.y = pos.y;
 		vert[2].position.x = pos.x + size.x;	vert[2].position.y = pos.y + size.y;
 		vert[3].position.x = pos.x;				vert[3].position.y = pos.y + size.y;
@@ -117,7 +117,7 @@ namespace gui {
 			val.setColor(*color);
 		shadow.setPosition(pos);
 		sf::Vector2u tsize = shadow.getTexture()->getSize();
-		shadow.setScale(size.x/tsize.x, size.y/tsize.y);
+		shadow.setScale(size.x / tsize.x, size.y / tsize.y);
 		shadow.setColor(sf::Color(255, 255, 255, 255));
 	}
 	void ProgressBar::draw(sf::RenderTarget& target) {
@@ -167,17 +167,11 @@ namespace gui {
 
 	//---------------------------------------------------------
 	// Button
-	sf::Sprite& Button::getSprite() {
-		return sprite;
-	}
-	sf::Sprite& Button::getHighlight() {
-		return highlight;
-	}
 	void Button::setTextures(sf::Texture& tx1, sf::Texture& tx2) {
 		getSprite().setTexture(tx1);
 		getSprite().setOrigin((sf::Vector2f)tx1.getSize() / 2.f);
 		getHighlight().setTexture(tx2);
-		getHighlight().setOrigin((sf::Vector2f)tx2.getSize()/2.f);
+		getHighlight().setOrigin((sf::Vector2f)tx2.getSize() / 2.f);
 	}
 	bool Button::check(int mx, int my) {
 		checked = false;
@@ -204,8 +198,8 @@ namespace gui {
 	//---------------------------------------------------------
 	// ButtonBig
 	void ButtonBig::setScale(float sx, float sy) {
-		getSprite().setScale(sx*0.7f, sy*0.7f);
-		getHighlight().setScale(0.f, sy*0.5f);
+		getSprite().setScale(sx * 0.7f, sy * 0.7f);
+		getHighlight().setScale(0.f, sy * 0.5f);
 		defScale = { sx, sy };
 	}
 	void ButtonBig::animate() {
@@ -217,7 +211,65 @@ namespace gui {
 			sc.y
 		);
 		sc = getHighlight().getScale();
-		getHighlight().setColor(withAlpha(th.buttonActive, sf::Uint8(std::min(1.f, (float)pow(sc.x/(defScale.x*0.5f), 0.4f))*255U)));
+		getHighlight().setColor(withAlpha(th.buttonActive, sf::Uint8(std::min(1.f, (float)pow(sc.x / (defScale.x * 0.5f), 0.4f)) * 255U)));
+	}
+
+	//---------------------------------------------------------
+	// Graph
+	void Graph::createLine(unsigned int _pointCount) {
+		delete[] line;
+		delete[] points;
+		line = new sf::Vertex[_pointCount];
+		points = new sf::Vector2f[_pointCount];
+		pointCount = _pointCount;
+	}
+	void Graph::setPoint(unsigned int _point, float _x, float _y) {
+		_x = -std::max(std::min(_x, 1.f), -1.f);
+		_y = -std::max(std::min(_y, 1.f), -1.f);
+		points[_point] = { _x, _y };
+	}
+	void Graph::setTextures(sf::Texture& tx1) {
+		shadow.setTexture(tx1);
+	}
+	void Graph::updateLine() {
+		for (size_t i = 0; i < pointCount; i++) {
+			line[i].position.x = front.pos.x + ((float)front.size.x * (points[i].x + 1));
+			line[i].position.y = front.pos.y + ((float)front.size.y / 2 * (1.f - points[i].y));
+		}
+	}
+	void Graph::update() {
+		// bg
+		bg.set(pos, size);
+		bg.setColor(th.boxOutside);
+		bg.update();
+		// bg outline
+		bgOut.set(pos, size);
+		bgOut.setColor(th.outline);
+		bgOut.update();
+		// front
+		front.set(
+			pos.x + cs.modSpace, pos.y + cs.modSpace,
+			size.x - cs.modSpace * 2, size.y - cs.modSpace * 2
+		);
+		front.setColor(th.moduleBg);
+		front.update();
+		// front outline
+		frontOut.set(front.pos, front.size);
+		frontOut.setColor(th.outline);
+		frontOut.update();
+		// shadow
+		shadow.setPosition(front.pos);
+		sf::Vector2u tsize = shadow.getTexture()->getSize();
+		shadow.setScale(front.size.x / tsize.x, front.size.y / tsize.y);
+		shadow.setColor(sf::Color(255, 255, 255, 128));
+	}
+	void Graph::draw(sf::RenderTarget& target) {
+		bg.draw(target);
+		front.draw(target);
+		target.draw(line, pointCount, sf::LineStrip);
+		target.draw(shadow);
+		bgOut.draw(target);
+		frontOut.draw(target);
 	}
 
 	//---------------------------------------------------------
@@ -289,13 +341,9 @@ namespace gui {
 		sprDragL.setScale(sx, sy);
 		sprDragT.setScale(sx, sy);
 	}
-	sf::Vector2f Widget::getInsidePos() {
-		return front.pos;
-	}
-	sf::Vector2f Widget::getInsideSize() {
-		return front.size;
-	}
 	void Widget::check(int mx, int my) {
+		if (!(checkTop || checkLeft))
+			return;
 		bool passLeft = false;
 		bool passTop = false;
 		if (!cursorDragStarted) {
@@ -323,7 +371,7 @@ namespace gui {
 						if (cs.boxH != cs.boxBoundsScaled)
 							cs.boxH = cs.boxBoundsScaled;
 						else
-							cs.boxH = app::res.width - cs.boxBoundsScaled;
+							cs.boxH = app::res.height - cs.boxBoundsScaled - cs.topH;
 						init(false, true);
 					}
 					else if (input::clickedLMB) {
@@ -368,7 +416,7 @@ namespace gui {
 		if (mousePosLast != mpos || !sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 			if (dragLeft && dragTop) {
 				cs.boxW = std::max(cs.boxBoundsScaled, std::min((int)app::res.width - cs.boxBoundsScaled, cs.boxW + mousePosLast.x - mpos.x));
-				cs.boxH = std::max(cs.boxBoundsScaled, std::min((int)app::res.height - cs.boxBoundsScaled, cs.boxH + mousePosLast.y - mpos.y));
+				cs.boxH = std::max(cs.boxBoundsScaled, std::min((int)app::res.height - cs.boxBoundsScaled - cs.topH, cs.boxH + mousePosLast.y - mpos.y));
 				sf::Mouse::setPosition(sf::Vector2i{ (int)pos.x, (int)pos.y }, app::mainWindow);
 				mousePosLast = sf::Mouse::getPosition(app::mainWindow);
 				sprDragL.setColor(th.buttonActive);
@@ -406,7 +454,7 @@ namespace gui {
 				}
 			}
 			else if (dragTop) {
-				cs.boxH = std::max(cs.boxBoundsScaled, std::min((int)app::res.height - cs.boxBoundsScaled, cs.boxH + mousePosLast.y - mpos.y));
+				cs.boxH = std::max(cs.boxBoundsScaled, std::min((int)app::res.height - cs.boxBoundsScaled - cs.topH, cs.boxH + mousePosLast.y - mpos.y));
 				sf::Mouse::setPosition(sf::Vector2i{ mousePosStart.x, (int)pos.y }, app::mainWindow);
 				mousePosLast = sf::Mouse::getPosition(app::mainWindow);
 				sprDragT.setColor(th.buttonActive);
@@ -433,9 +481,9 @@ namespace gui {
 		sprite.setTexture(texture.getTexture());
 	}
 	void ScrollPanel::create() {
-		app::cslog("GUI", "Recreating a ScrollPanel.");
-		texture.create((unsigned int)size.x-1U, (unsigned int)size.y-1U);
-		sprite.setTextureRect(sf::IntRect(0, 0, (int)size.x-1, (int)size.y-1));
+		cslog("GUI", "Recreating a ScrollPanel.");
+		texture.create((unsigned int)size.x - 1U, (unsigned int)size.y - 1U);
+		sprite.setTextureRect(sf::IntRect(0, 0, (int)size.x - 1, (int)size.y - 1));
 	}
 	void ScrollPanel::smooth() {
 		scrollApp.x = approach(
@@ -476,19 +524,16 @@ namespace gui {
 		sf::Vector2i mpos = sf::Mouse::getPosition(app::mainWindow);
 		if (mousePosLast != mpos || cursorDragStarted) {
 			if (drag) {
-				scroll.x += (mousePosLast.x - mpos.x)/((float)*scrollScale);
-				scroll.y += (mousePosLast.y - mpos.y)/((float)*scrollScale);
-				sf::Mouse::setPosition(sf::Vector2i{ (int)mousePosStart.x, (int)mousePosStart.y }, app::mainWindow);
+				scroll.x += (mousePosLast.x - mpos.x) / ((float)*scrollScale);
+				scroll.y += (mousePosLast.y - mpos.y) / ((float)*scrollScale);
 				mousePosLast = sf::Mouse::getPosition(app::mainWindow);
 
 				if (!sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
 					drag = false;
 					cursorDragStarted = false;
-					app::mainWindow.setMouseCursorVisible(true);
 				}
 				else {
 					cursorDragStarted = true;
-					app::mainWindow.setMouseCursorVisible(false);
 				}
 			}
 		}
@@ -499,9 +544,6 @@ namespace gui {
 	}
 	void ScrollPanel::clear(sf::Color color) {
 		texture.clear(color);
-	}
-	sf::RenderTexture& ScrollPanel::getTexture() {
-		return texture;
 	}
 
 	void ScrollPanel::update() {
@@ -514,8 +556,70 @@ namespace gui {
 
 	//---------------------------------------------------------
 	// Channels
-	// TODO: (BUG) fix incorrectly displayed slots at specific scroll values
-	void Channels::recalculate() {
+	void Channels::cacheBar() {
+		cslog("GUI", "Caching channel bar");
+		for (unsigned int y = 0U; y < height; y++) {
+			volume[y].setPos(cs.patSpace, (y - 1) * cs.patFull + cs.patSpace);
+			volume[y].round();
+			volume[y].update();
+		}
+		for (unsigned int y = 0U; y < height; y++) {
+			muted[y].setPos(cs.patSpace + cs.pat / 2.f, (y - 1) * cs.patFull + cs.patSpace);
+			muted[y].round();
+			muted[y].update();
+		}
+	}
+	void Channels::cacheRects() {
+		cslog("GUI", "Caching channel rects");
+		renderRect.clear(sf::Color(0, 0, 0, 0));
+		/// adjust
+		for (unsigned int y = 0U; y < height; y++)
+			for (unsigned int x = 0U; x < width; x++) {
+				rect[width * y + x].setPos((x + 1) * cs.patFull + cs.patSpace, (y - 1) * cs.patFull + cs.patSpace);
+				rect[width * y + x].round();
+				rect[width * y + x].update();
+			}
+		for (unsigned int y = 0U; y < height; y++)
+			for (unsigned int x = 0U; x < width; x++) {
+				rectOut[width * y + x].setPos((x + 1) * cs.patFull + cs.patSpace, (y - 1) * cs.patFull + cs.patSpace);
+				rectOut[width * y + x].round();
+				rectOut[width * y + x].update();
+			}
+		/// draw
+		// rects
+		for (unsigned int y = 0U; y < height; y++)
+			for (unsigned int x = 0U; x < width; x++) {
+				rect[width * y + x].draw(renderRect.texture);
+			}
+		for (unsigned int y = 0U; y < height; y++)
+			for (unsigned int x = 0U; x < width; x++) {
+				rectOut[width * y + x].draw(renderRect.texture);
+			}
+		// display
+		renderRect.display();
+	}
+	void Channels::cacheText() {
+		cslog("GUI", "Caching channel text");
+		renderText.clear(sf::Color(0, 0, 0, 0));
+		// adjust
+		sf::FloatRect bounds;
+		for (unsigned int y = 0U; y < height; y++)
+			for (unsigned int x = 0U; x < width; x++) {
+				bounds = text[width * y + x].getLocalBounds();
+				text[width * y + x].setPosition(
+					x * cs.patFull + cs.patSpace + std::floor(cs.patFull / 2.f - (bounds.left + bounds.width) / 2.f) - 2,
+					(y - 1) * cs.patFull + cs.patSpace + std::floor(cs.patFull / 2.f - (15u * cs.scale / 2.f) - 3)
+				);
+			}
+		// draw
+		for (unsigned int y = 0U; y < height; y++)
+			for (unsigned int x = 0U; x < width; x++) {
+				renderText.texture.draw(text[width * y + x], textBlendMode);
+			}
+		// display
+		renderText.display();
+	}
+	void Channels::recalculate(bool rescale) {
 		// calculate
 		unsigned int prevw = width;
 		unsigned int prevh = height;
@@ -532,10 +636,15 @@ namespace gui {
 			height++;
 
 		// skip if no changes
-		if (prevw == width && prevh == height)
-			return;
+		if (!rescale)
+			if (prevw == width && prevh == height)
+				return;
 
-		app::cslog("GUI", std::string("Allocating channel slots: ") + std::to_string(width) + "x" + std::to_string(height));
+		// recreate rect render
+		renderRect.create(width * cs.patFull, height * cs.patFull);
+		renderText.create(width * cs.patFull, height * cs.patFull);
+		renderBar.create(cs.patFull, height * cs.patFull);
+
 		// deallocate
 		delete[] rect;
 		delete[] rectOut;
@@ -543,6 +652,7 @@ namespace gui {
 		delete[] volume;
 		delete[] muted;
 		// allocate
+		cslog("GUI", std::string("Allocating channel slots: ") + std::to_string(width) + "x" + std::to_string(height));
 		rect = new Rectangle[width * height];
 		rectOut = new RectangleOut[width * height];
 		text = new sf::Text[width * height];
@@ -553,88 +663,85 @@ namespace gui {
 		for (unsigned int y = 0U; y < height; y++) {
 			muted[y].setSize(cs.pat / 2.f - cs.patSpace, cs.pat / 2.f - cs.patSpace);
 			muted[y].setTextures(app::tx_shadow_box);
+		}
+		for (unsigned int y = 0U; y < height; y++) {
 			volume[y].setSize(cs.pat / 2.f - cs.patSpace, cs.pat);
 			volume[y].setTextures(app::tx_shadow_v);
 		}
 		for (unsigned int y = 0U; y < height; y++)
 			for (unsigned int x = 0U; x < width; x++) {
 				rect[width * y + x].setSize(cs.pat, cs.pat);
-				rectOut[width * y + x].setSize(cs.pat, cs.pat);
-			}
-		for (unsigned int y = 0U; y < height; y++)
-			for (unsigned int x = 0U; x < width; x++) {
 				rect[width * y + x].setColor(th.boxOutside);
-				rectOut[width * y + x].setColor(th.outline);
-			}
-		for (unsigned int y = 0U; y < height; y++)
-			for (unsigned int x = 0U; x < width; x++) {
-				text[width * y + x].setFont(app::font);
-				text[width * y + x].setCharacterSize(15u*cs.scale);
-			}
-		update();
-	}
-	void Channels::refresh() {
-		unsigned int offx = std::ceil(scrollPanel->scrollApp.x - 0.5f);
-		unsigned int offy = std::ceil(scrollPanel->scrollApp.y - 0.5f);
-		for (unsigned int i = 0U; i < width * height; i++) {
-			unsigned int px = std::ceil(rect[i].pos.x / cs.patFull - 0.5f) + offx - 1;
-			unsigned int py = std::ceil(rect[i].pos.y / cs.patFull - 0.5f) + offy;
-			if (px < proj::project.getSongLength())
-				if (py < proj::project.channels.size())
-					text[i].setString(std::to_string(proj::project.channels[py]->slots[px]));
-		}
-	}
-	void Channels::update() {
-		// update
-		scale = cs.patFull;
-		// code
-		double sx = scrollPanel->scrollApp.x;
-		double sy = scrollPanel->scrollApp.y;
-		sx = sx - int(sx);
-		sy = sy - int(sy);
-		sx = std::floor(sx * cs.patFull);
-		sy = std::floor(sy * cs.patFull);
-
-		for (unsigned int y = 0U; y < height; y++)
-			for (unsigned int x = 0U; x < width; x++) {
-				rect[width * y + x].setPos((x + 1) * cs.patFull - sx + cs.patSpace, (y - 1) * cs.patFull - sy + cs.patSpace);
 				rect[width * y + x].update();
 			}
 		for (unsigned int y = 0U; y < height; y++)
 			for (unsigned int x = 0U; x < width; x++) {
-				rectOut[width * y + x].setPos((x + 1) * cs.patFull - sx + cs.patSpace, (y - 1) * cs.patFull - sy + cs.patSpace);
+				rectOut[width * y + x].setSize(cs.pat, cs.pat);
+				rectOut[width * y + x].setColor(th.outline);
 				rectOut[width * y + x].update();
 			}
 		for (unsigned int y = 0U; y < height; y++)
-			for (unsigned int x = 0U; x < width; x++)
-				text[width * y + x].setPosition((x + 1) * cs.patFull - sx + cs.patSpace, (y - 1) * cs.patFull - sy + cs.patSpace);
-		for (unsigned int y = 0U; y < height; y++) {
-			volume[y].setPos(cs.patSpace, (y - 1) * cs.patFull - sy + cs.patSpace);
-			volume[y].update();
-		}
-		for (unsigned int y = 0U; y < height; y++) {
-			muted[y].setPos(cs.patSpace + cs.pat/2.f, (y - 1) * cs.patFull - sy + cs.patSpace);
-			muted[y].update();
-		}
-	}
+			for (unsigned int x = 0U; x < width; x++) {
+				text[width * y + x].setFont(app::font);
+				text[width * y + x].setCharacterSize(15u * cs.scale);
+			}
 
+		// cache
+		cacheRects();
+		// cacheText(); - not needed (refresh())
+		cacheBar();
+		refresh();
+		updateChannels();
+	}
+	void Channels::refresh() {
+		unsigned int offx = unsigned int(scrollPanel->scrollApp.x);
+		unsigned int offy = unsigned int(scrollPanel->scrollApp.y);
+		for (unsigned int i = 0U; i < width * height; i++) {
+			unsigned int x = std::floor(rect[i].pos.x / cs.patFull) + offx - 2;
+			unsigned int y = std::floor(rect[i].pos.y / cs.patFull) + offy;
+			if (y < proj::project.channels.size())
+				if (x < proj::project.getSongLength())
+					text[i].setString(std::to_string(proj::project.channels[y]->slots[x]));
+		}
+		cacheText();
+	}
+	void Channels::update() {
+		// update
+	}
+	void Channels::updateChannels() {
+		double sx = scrollPanel->scrollApp.x;
+		double sy = scrollPanel->scrollApp.y;
+		if (lastx != int(sx) || lasty != int(sy))
+			refresh();
+		lastx = int(sx);
+		lasty = int(sy);
+		sx = sx - lastx;
+		sy = sy - lasty;
+		sx = std::floor(sx * (double)cs.patFull);
+		sy = std::floor(sy * (double)cs.patFull);
+
+		renderRect.pos.x = -sx; renderRect.pos.y = -sy;
+		renderText.pos.x = -sx; renderText.pos.y = -sy;
+		renderBar.pos.y = -sy;
+		renderRect.update();
+		renderText.update();
+		renderBar.update();
+	}
 	void Channels::draw(sf::RenderTarget& target) {
+		renderRect.draw(target);
+		renderText.draw(target);
+
+		// volume, muting
+		renderBar.clear(th.boxInside);
 		for (unsigned int y = 0U; y < height; y++)
-			for (unsigned int x = 0U; x < width; x++) {
-				rect[width * y + x].draw(target);  // TODO: (OPTIMIZATION, 10%) cache to a texture on recalculate() and draw that instead
-			}
+			volume[y].draw(renderBar.texture);
 		for (unsigned int y = 0U; y < height; y++)
-			for (unsigned int x = 0U; x < width; x++) {
-				rectOut[width * y + x].draw(target);  // TODO: (OPTIMIZATION, 12%) cache to a texture on recalculate() and draw that instead
-			}
-		for (unsigned int y = 0U; y < height; y++)
-			for (unsigned int x = 0U; x < width; x++) {
-				target.draw(text[width * y + x]); // TODO: (OPTIMIZATION, 46%) cache to a texture on refresh() and draw that instead
-			}
-		for (unsigned int y = 0U; y < height; y++)
-			volume[y].draw(target);
-		for (unsigned int y = 0U; y < height; y++)
-			muted[y].draw(target);
+			muted[y].draw(renderBar.texture);
+		renderBar.display();
+		renderBar.draw(target);
+	}
+	void Channels::check(int mx, int my) {
+
 	}
 
 	//---------------------------------------------------------
@@ -650,7 +757,10 @@ namespace gui {
 		texture.display();
 		sprite.setTexture(texture.getTexture());
 	}
-	inline void Render::draw(sf::RenderTarget& target) {
+	void Render::update() {
+		sprite.setPosition(pos);
+	}
+	void Render::draw(sf::RenderTarget& target) {
 		target.draw(sprite);
 	}
 }
