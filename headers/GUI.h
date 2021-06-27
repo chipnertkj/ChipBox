@@ -3,6 +3,9 @@
 #include "GUIClasses.h"
 
 namespace gui {
+	// mouse pos
+	extern sf::Vector2i mouse;
+	extern sf::Vector2i mouseLast;
 	// channels display (access for recalculation)
 	extern Channels channels;
 	// gui resizing

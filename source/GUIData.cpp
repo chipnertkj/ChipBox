@@ -1,4 +1,5 @@
 #include "GUIData.h" // interface
+#include "GUI.h"
 #include "App.h"
 namespace gui {
 	theme::theme() {}

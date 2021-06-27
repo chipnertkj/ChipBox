@@ -139,7 +139,7 @@ namespace gui {
 	void Checkbox::check(int mx, int my) {
 		if (refValue != NULL)
 			if (hover(mx, my, pos.x, pos.y, size.x, size.y))
-				if (input::clickedLMB) {
+				if (input::onClick(input::clickedLMB)) {
 					*refValue = !refValue;
 					updateValue();
 				}
@@ -481,17 +481,23 @@ namespace gui {
 		sprite.setTexture(texture.getTexture());
 	}
 	void ScrollPanel::create() {
-		cslog("GUI", "Recreating a ScrollPanel.");
+		cslogstr("GUI", "Recreating a ScrollPanel.")
 		texture.create((unsigned int)size.x - 1U, (unsigned int)size.y - 1U);
 		sprite.setTextureRect(sf::IntRect(0, 0, (int)size.x - 1, (int)size.y - 1));
 	}
-	void ScrollPanel::smooth() {
+	bool ScrollPanel::smooth() {
+		float x = scrollApp.x, y = scrollApp.y;
 		scrollApp.x = approach(
 			scrollApp.x, scroll.x, std::abs(scrollApp.x - scroll.x) / 3.f
 		);
 		scrollApp.y = approach(
 			scrollApp.y, scroll.y, std::abs(scrollApp.y - scroll.y) / 3.f
 		);
+		if (x != scrollApp.x)
+			return true;
+		if (y != scrollApp.y)
+			return true;
+		return false;
 	}
 	void ScrollPanel::check(int mx, int my) {
 		// scrolling
@@ -541,6 +547,8 @@ namespace gui {
 	void ScrollPanel::clamp() {
 		scroll.x = std::max(std::min(scroll.x, scrollMax.x), 0.f);
 		scroll.y = std::max(std::min(scroll.y, scrollMax.y), 0.f);
+		scrollApp.x = std::max(std::min(scrollApp.x, scrollMax.x), 0.f);
+		scrollApp.y = std::max(std::min(scrollApp.y, scrollMax.y), 0.f);
 	}
 	void ScrollPanel::clear(sf::Color color) {
 		texture.clear(color);
@@ -557,7 +565,7 @@ namespace gui {
 	//---------------------------------------------------------
 	// Channels
 	void Channels::cacheBar() {
-		cslog("GUI", "Caching channel bar");
+		cslogstr("GUI", "Caching channel bar")
 		for (unsigned int y = 0U; y < height; y++) {
 			volume[y].setPos(cs.patSpace, (y - 1) * cs.patFull + cs.patSpace);
 			volume[y].round();
@@ -570,7 +578,7 @@ namespace gui {
 		}
 	}
 	void Channels::cacheRects() {
-		cslog("GUI", "Caching channel rects");
+		cslogstr("GUI", "Caching channel rects")
 		renderRect.clear(sf::Color(0, 0, 0, 0));
 		/// adjust
 		for (unsigned int y = 0U; y < height; y++)
@@ -599,7 +607,7 @@ namespace gui {
 		renderRect.display();
 	}
 	void Channels::cacheText() {
-		cslog("GUI", "Caching channel text");
+		cslogstr("GUI", "Caching channel text")
 		renderText.clear(sf::Color(0, 0, 0, 0));
 		// adjust
 		sf::FloatRect bounds;
@@ -623,11 +631,11 @@ namespace gui {
 		// calculate
 		unsigned int prevw = width;
 		unsigned int prevh = height;
-		width = std::min(proj::project.getSongLength(), unsigned int(std::ceil(scrollPanel->size.x / cs.patFull)));
-		height = std::min(unsigned int(proj::project.channels.size()), unsigned int(std::ceil(scrollPanel->size.y / cs.patFull))) + 1U;
+		width = std::min(proj::project.getSongLength(), unsigned int(std::ceil(scrollPanel->size.x / cs.patFull))) + 1u;
+		height = std::min(unsigned int(proj::project.getChannelCount()), unsigned int(std::ceil(scrollPanel->size.y / cs.patFull))) + 1u;
 
-		scrollPanel->scrollMax.x = std::max(0.f, (float)proj::project.getSongLength() - (scrollPanel->size.x - cs.patSpace - 1) / cs.patFull);
-		scrollPanel->scrollMax.y = std::max(0.f, (float)proj::project.channels.size() - (scrollPanel->size.y - cs.patSpace - 1) / cs.patFull);
+		scrollPanel->scrollMax.x = std::max(0.f, (float)(proj::project.getSongLength() + 1) - (scrollPanel->size.x - cs.patSpace - 1) / cs.patFull);
+		scrollPanel->scrollMax.y = std::max(0.f, (float)proj::project.getChannelCount() - (scrollPanel->size.y - cs.patSpace - 1) / cs.patFull);
 
 		// visual fix (add at the end if outside widget)
 		if (scrollPanel->scrollMax.x > 0.f)
@@ -652,7 +660,7 @@ namespace gui {
 		delete[] volume;
 		delete[] muted;
 		// allocate
-		cslog("GUI", std::string("Allocating channel slots: ") + std::to_string(width) + "x" + std::to_string(height));
+		cslogstr("GUI", std::string("Allocating channel slots: ") + std::to_string(width) + "x" + std::to_string(height))
 		rect = new Rectangle[width * height];
 		rectOut = new RectangleOut[width * height];
 		text = new sf::Text[width * height];
@@ -688,7 +696,7 @@ namespace gui {
 
 		// cache
 		cacheRects();
-		// cacheText(); - not needed (refresh())
+		// cacheText() not needed (refresh())
 		cacheBar();
 		refresh();
 		updateChannels();
@@ -699,14 +707,30 @@ namespace gui {
 		for (unsigned int i = 0U; i < width * height; i++) {
 			unsigned int x = std::floor(rect[i].pos.x / cs.patFull) + offx - 2;
 			unsigned int y = std::floor(rect[i].pos.y / cs.patFull) + offy;
-			if (y < proj::project.channels.size())
+			if (y < proj::project.getChannelCount())
 				if (x < proj::project.getSongLength())
-					text[i].setString(std::to_string(proj::project.channels[y]->slots[x]));
+					text[i].setString(std::to_string(proj::project.getChannel(y)->slots[x]));
 		}
+		needRedraw = true;
 		cacheText();
 	}
 	void Channels::update() {
-		// update
+		selectedRect[0].setSize(widget->getInsideSize().x, cs.pat + 2);
+		selectedRect[0].setColor(th.selectedBG);
+		selectedRect[1].setSize(cs.pat + 2, widget->getInsideSize().y);
+		selectedRect[1].setColor(th.selectedBG);
+		selectedRect[2].setSize(cs.pat+3, cs.pat+3);
+		selectedRect[2].setColor(th.selected);
+		selectedRect[3].setSize(cs.pat + 3, cs.pat + 3);
+		selectedRect[3].setColor(th.selected);
+		updateChannels();
+	}
+	void Channels::setTextures(sf::Texture& tx1) {
+		for (int i = 0; i < 4; i++)
+			shadow[i].setTexture(tx1);
+		shadow[1].setRotation(180);
+		shadow[2].setRotation(270);
+		shadow[3].setRotation(90);
 	}
 	void Channels::updateChannels() {
 		double sx = scrollPanel->scrollApp.x;
@@ -726,11 +750,56 @@ namespace gui {
 		renderRect.update();
 		renderText.update();
 		renderBar.update();
+
+		selectedRect[0].setPos(cs.patFull, (selected.y - scrollPanel->scrollApp.y) * cs.patFull + cs.patSpace - 2);
+		selectedRect[0].round();
+		selectedRect[0].update();
+		selectedRect[1].setPos((selected.x + 1 - scrollPanel->scrollApp.x) * cs.patFull + cs.patSpace - 2, 0);
+		selectedRect[1].round();
+		selectedRect[1].update();
+		selectedRect[2].setPos(
+			(selected.x - scrollPanel->scrollApp.x + 1) * cs.patFull + cs.patSpace - 2,
+			(selected.y - scrollPanel->scrollApp.y) * cs.patFull + cs.patSpace - 2
+		);
+		selectedRect[2].round();
+		selectedRect[2].update();
+
+		sf::Vector2f ws = widget->getInsideSize();
+		shadow[0].setScale(ws.x - cs.patFull, cs.scale);
+		shadow[0].setPosition(cs.patFull, 0);
+		shadow[1].setScale(ws.x - cs.patFull, cs.scale);
+		shadow[1].setPosition(ws.x, ws.y);
+		shadow[2].setScale(ws.y, cs.scale);
+		shadow[2].setPosition(cs.patFull, ws.y);
+		shadow[3].setScale(ws.y, cs.scale);
+		shadow[3].setPosition(ws.x, 0);
+		
+		barLine[0].position = { (float)cs.patFull, 0 };
+		barLine[0].color = th.outline;
+		barLine[1].position = { (float)cs.patFull, ws.y };
+		barLine[1].color = th.outline;
+
+		if (scrollPanel->smooth())
+			updateCursor(cx, cy); // includes needRedraw = true
 	}
 	void Channels::draw(sf::RenderTarget& target) {
+		/// check
+		if (!needRedraw)
+			return;
+		needRedraw = false;
+		/// draw
+		scrollPanel->clear(th.boxInside);
+		// channels
 		renderRect.draw(target);
 		renderText.draw(target);
-
+		// selected
+		for (int i = 0; i < 3; i++)
+			selectedRect[i].draw(target);
+		if (showCursor)
+			selectedRect[3].draw(target);
+		// shadows
+		for (int i = 0; i < 4; i++)
+			target.draw(shadow[i]);
 		// volume, muting
 		renderBar.clear(th.boxInside);
 		for (unsigned int y = 0U; y < height; y++)
@@ -739,9 +808,84 @@ namespace gui {
 			muted[y].draw(renderBar.texture);
 		renderBar.display();
 		renderBar.draw(target);
+		target.draw(barLine, 2, sf::Lines);
 	}
 	void Channels::check(int mx, int my) {
+		// scroll panel
+		scrollPanel->check(mx, my);
+		scrollPanel->clamp();
 
+		// mouse
+		int x = 0, y = 0;
+		sf::Vector2f wp = widget->getInsidePos(), ws = widget->getInsideSize();
+		// the = is here on purpose, don't cry
+		if (showCursor = hover(mx, my, wp.x + cs.patFull, wp.y, ws.x - cs.patFull, ws.y)) {
+			x = std::floor((mx - wp.x) / cs.patFull + scrollPanel->scrollApp.x) - 1;
+			y = std::floor((my - wp.y) / cs.patFull + scrollPanel->scrollApp.y);
+
+			// mouse click
+			if (input::onClick(input::clickedLMB))
+				if (x < (int)proj::project.getSongLength())
+					if (y < (int)proj::project.getChannelCount())
+						setSelected(x, y);
+
+			// update cache
+			if (x != lastccx || y != lastccy)
+				updateCursor(x, y);
+		}
+		else {
+			if (showCursor != showCursorLast) {
+				needRedraw = true;
+			}
+		}
+
+		lastccx = x;
+		lastccy = y;
+		showCursorLast = showCursor;
+	}
+	void Channels::updateCursor(int _x, int _y) {
+		cx = _x; cy = _y;
+		if ((cx > (int)proj::project.getSongLength() - 1) || (cy > (int)proj::project.getChannelCount() - 1))
+			showCursor = false;
+		selectedRect[3].setPos(
+			(_x + 1 - scrollPanel->scrollApp.x) * cs.patFull + cs.patSpace - 2,
+			(_y - scrollPanel->scrollApp.y) * cs.patFull + cs.patSpace - 2
+		);
+		selectedRect[3].round();
+		selectedRect[3].update();
+		needRedraw = true;
+	}
+	void Channels::setSelected(int _x, int _y) {
+		selected = { _x, _y };
+		selected.x = std::clamp(selected.x, 0, (int)proj::project.getSongLength() - 1);
+		selected.y = std::clamp(selected.y, 0, (int)proj::project.getChannelCount() - 1);
+		pan();
+	}
+	void Channels::moveSelected(int _x, int _y) {
+		selected += { _x, _y };
+		// x
+		if (selected.x > (int)proj::project.getSongLength() - 1)
+			selected.x = 0;
+		if (selected.x < 0)
+			selected.x = (int)proj::project.getSongLength() - 1;
+		// y
+		if (selected.y > (int)proj::project.getChannelCount() - 1)
+			selected.y = 0;
+		if (selected.y < 0)
+			selected.y = (int)proj::project.getChannelCount() - 1;
+		pan();
+	}
+	void Channels::pan() {
+		scrollPanel->scroll.x = selected.x - ((std::round(widget->getInsideSize().x / cs.patFull) - 1) / 2);
+		scrollPanel->scroll.y = selected.y - ((std::round(widget->getInsideSize().y / cs.patFull) - 1) / 2);
+		scrollPanel->clamp();
+		needRedraw = true;
+	}
+	void Channels::resetView() {
+		pan();
+		scrollPanel->scrollApp.x = selected.x - ((std::round(widget->getInsideSize().x / cs.patFull) - 1) / 2);
+		scrollPanel->scrollApp.y = selected.y - ((std::round(widget->getInsideSize().y / cs.patFull) - 1) / 2);
+		scrollPanel->clamp();
 	}
 
 	//---------------------------------------------------------

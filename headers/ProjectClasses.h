@@ -173,9 +173,9 @@ namespace proj {
 
 	class Project {
 	private:
-		unsigned int songLength = 32;
-	public:
+		unsigned int songLength = 8;
 		std::vector<Channel*> channels;
+	public:
 
 		Project();
 
@@ -187,6 +187,8 @@ namespace proj {
 		void setSongLength(unsigned int _length);
 
 		Channel* addChannel(std::string _name, ChannelType _type);
+		Channel* getChannel(unsigned int n) { return channels[n]; }
+		unsigned int getChannelCount() { return channels.size(); }
 	};
 }
 

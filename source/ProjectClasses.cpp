@@ -27,17 +27,17 @@ namespace proj {
 		}
 		// gui update
 		gui::channels.recalculate();
-		gui::channels.scrollPanel->scroll.x = _length + 1U;
+		gui::channels.setSelected(_length - 1, gui::channels.getSelected().y);
 	}
 
 	Channel* Project::addChannel(std::string _name, ChannelType _type) {
-		cslog("PROJECT", "Adding channel \"" + _name + "\"");
+		cslogstr("PROJECT", "Adding channel \"" + _name + "\"")
 		// add channel to project
 		Channel* channel = new Channel(_name, _type, songLength);
 		channels.push_back(channel);
 		// gui update
 		gui::channels.recalculate();
-		gui::channels.scrollPanel->scroll.y = project.channels.size() + 1U;
+		gui::channels.setSelected(gui::channels.getSelected().x, channels.size()-1);
 		// return pointer
 		return channel;
 	}
@@ -50,7 +50,7 @@ namespace proj {
 		type = _type;
 		// fill slots
 		for (unsigned int i = 0u; i < _length; i++)
-			slots.push_back(i + project.channels.size() * _length);
+			slots.push_back(0);
 		instruments.push_back(new InstrumentSynth(this, "abc"));
 	}
 
@@ -134,7 +134,7 @@ namespace proj {
 	void InstrumentSynth::loadChip(std::string _name, bool _custom) {
 		// TODO: add automated chip loading
 		if (chips.find(_name) != chips.end()) {
-			cslog("LOADING CHIP", _name + " already loaded!");
+			cslogstr("LOADING CHIP", _name + " already loaded!")
 			return;
 		}
 
@@ -147,7 +147,7 @@ namespace proj {
 			path = defaultChipPath;
 		path += _name + chipExt;
 
-		cslog("LOADING CHIP", "Loading " + _name);
+		cslogstr("LOADING CHIP", "Loading " + _name)
 		std::ifstream chipFile(path);
 		if (chipFile.is_open()) {
 			std::string text = "";
@@ -166,14 +166,14 @@ namespace proj {
 				if (line > 4) {
 					std::stringstream(text) >> chip->samples[line - 5];
 					chip->samples[line - 5] /= range;
-					cslog("", std::to_string(chip->samples[line - 5]));
+					cslogstr("", std::to_string(chip->samples[line - 5]))
 				}
 				line++;
 			}
-			cslog("LOADING CHIP", "Loaded from " + path);
+			cslogstr("LOADING CHIP", "Loaded from " + path)
 		}
 		else
-			cslog("LOADING CHIP", "Failed to load from " + path);
+			cslogstr("LOADING CHIP", "Failed to load from " + path)
 
 		chips[_name] = (Chip*)chip;
 	}
@@ -204,7 +204,7 @@ namespace proj {
 			path = defaultChipPath;
 		path += _name + bankExt;
 
-		cslog("LOADING BANK", "Loading " + _name);
+		cslogstr("LOADING BANK", "Loading " + _name)
 		std::ifstream bankFile(path);
 		if (bankFile.is_open()) {
 			std::string text = "";
@@ -221,12 +221,12 @@ namespace proj {
 					name = text;
 
 					if (chips.find(name) != chips.end()) {
-						cslog("LOADING CHIP", name + " already loaded!");
+						cslogstr("LOADING CHIP", name + " already loaded!")
 						skip = true;
 					}
 					else {
 						skip = false;
-						cslog("LOADING CHIP", "Loading " + name);
+						cslogstr("LOADING CHIP", "Loading " + name)
 					}
 				}
 				if (line == lineLastEnd + 3) {
@@ -245,7 +245,7 @@ namespace proj {
 					}
 					else {
 						if (!skip) {
-							cslog("LOADING CHIP", "Loaded " + name + " from " + _name + bankExt);
+							cslogstr("LOADING CHIP", "Loaded " + name + " from " + _name + bankExt)
 							chips[name] = chip;
 						}
 						lineLastEnd = line;
@@ -253,10 +253,11 @@ namespace proj {
 				}
 				line++;
 			}
-			cslog("LOADING BANK", "Loaded from " + path);
+			cslogstr("LOADING BANK", "Loaded from " + path)
 		}
-		else
-			cslog("LOADING BANK", "Failed to load from " + path);
+		else {
+			cslogstr("LOADING BANK", "Failed to load from " + path)
+		}
 	}
 
 	void InstrumentSynth::process(chunk _chunk) {

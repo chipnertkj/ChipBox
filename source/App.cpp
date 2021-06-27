@@ -42,6 +42,7 @@ namespace app {
 	sf::Texture tx_shadow_box;
 	sf::Texture tx_shadow_h;
 	sf::Texture tx_shadow_v;
+	sf::Texture tx_shadow;
 	// fonts
 	sf::Font font;
 	// cursors
@@ -144,7 +145,7 @@ namespace app {
 
 	// load resources
 	bool load() {
-		cslog("SYSTEM", "Loading resources...");
+		cslogstr("SYSTEM", "Loading resources...")
 
 		// blur shader
 		if (!shaderH.loadFromFile("resources/shaders/gaussianH.glsl", sf::Shader::Fragment))
@@ -189,6 +190,10 @@ namespace app {
 		if (!tx_shadow_v.loadFromFile("resources/images/shadow_v.png"))
 			return false;
 		tx_shadow_v.setSmooth(true);
+		// tx_shadow
+		if (!tx_shadow.loadFromFile("resources/images/shadow.png"))
+			return false;
+		tx_shadow.setSmooth(true);
 
 		/// fonts
 		if (!font.loadFromFile("resources/fonts/timeburnernormal.ttf"))
@@ -202,7 +207,7 @@ namespace app {
 		cursor_text.loadFromSystem(sf::Cursor::Text);
 		cursor_tleftbright.loadFromSystem(sf::Cursor::SizeTopLeftBottomRight);
 
-		cslog("SYSTEM", "Done loading resources");
+		cslogstr("SYSTEM", "Done loading resources")
 
 		return true;
 	}
@@ -227,13 +232,13 @@ namespace app {
 	// log exceptions
 	void exception(std::string text) {
 		console(true);
-		cslog("EXCEPTION", text);
+		cslogstr("EXCEPTION", text)
 		system("pause");
 	}
 
 	// MAIN INIT
 	bool init() {
-		cslog("SYSTEM", "Initializing");
+		cslogstr("SYSTEM", "Initializing")
 
 		// load resources
 		if (!load())

@@ -179,7 +179,7 @@ namespace gui {
 
 		void display();
 		void create();
-		void smooth();
+		bool smooth();
 		void clear(sf::Color color = sf::Color());
 		void check(int mx, int my);
 		void clamp();
@@ -235,32 +235,63 @@ namespace gui {
 
 	class Channels {
 	private:
-		// ui
+		/// ui
+		// slots
 		Rectangle* rect = NULL;
 		RectangleOut* rectOut = NULL;
 		sf::Text* text = NULL;
-		
+		// attached
 		ProgressBar* volume = NULL;
 		Checkbox* muted = NULL;
+		// scrollbar
+		Rectangle scrollW[2];
+		Rectangle scrollH[2];
+		// selection
+		Rectangle selectedRect[4];
+		// detail
+		sf::Sprite shadow[4];
+		sf::Vertex barLine[2];
+
+		/// data
+		// selected pattern
+		sf::Vector2i selected = { -1, -1 };
 
 		// slot count (optimization)
 		unsigned int width = 0u, height = 0u;
+		// last frame vars (optimization)
 		unsigned int lastx = 0u, lasty = 0u;
+		bool showCursor = true, showCursorLast = showCursor;
+		int lastccx = 0, lastccy = 0;
+		int cx = 0, cy = 0;
+		// need to recache the scrollpanel? (optimization)
+		bool needRedraw = true;
 	public:
 		ScrollPanel* scrollPanel = NULL; // for scroll state access
-		Render renderRect, renderText, renderBar;
+		Widget* widget = NULL; // for widget access
+		Render renderRect, renderText, renderBar; // renders for optimizations
 
+		void setTextures(sf::Texture& tx1); // sets shadow textures
 		void recalculate(bool rescale = false); // recalculates and allocates required memory for slot caching (optimization)
 		void refresh(); // sets pattern slot numbers according to current scroll
 		void updateChannels(); // rearranges rects and text
-		void check(int mx, int my);
+		void check(int mx, int my); // perform click checks on the ScrollPanel
+
+		sf::Vector2i getSelected() { return selected; }
+		void setSelected(int _x, int _y);
+		void moveSelected(int _x, int _y);
+
+		void pan();	// pans the view slowly towards the selected pattern (centered)
+		void resetView(); // instantly resets the view to the pan target
 
 		EMPTY_I
 	protected:
+		// cache contents of the corresponding renders
 		void cacheRects();
 		void cacheText();
 		void cacheBar();
-
+		// update the cursor and redraw the scrollpanel
+		void updateCursor(int _x, int _y);
+		// blend mode for rendering text with transparent backgrounds (aa fix)
 		const sf::BlendMode textBlendMode = sf::BlendMode(sf::BlendMode::One, sf::BlendMode::DstColor);
 	};
 }

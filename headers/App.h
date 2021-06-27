@@ -36,6 +36,7 @@ namespace app {
 	extern sf::Texture tx_shadow_box;
 	extern sf::Texture tx_shadow_h;
 	extern sf::Texture tx_shadow_v;
+	extern sf::Texture tx_shadow;
 	// fonts
 	extern sf::Font font;
 	// cursors
@@ -63,7 +64,9 @@ namespace app {
 
 // log events
 #if 1
-#define cslog(base, text) app::dcslog(base, text)
+#define cslog(base, text) app::dcslog(std::to_string(base), std::to_string(text));
+#define cslogstr(base, text) app::dcslog(base, text);
 #else
 #define cslog(base, text)
+#define cslogstr(base, text)
 #endif

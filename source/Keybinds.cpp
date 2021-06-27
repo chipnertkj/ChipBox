@@ -46,6 +46,14 @@ namespace input {
 		scaleUp,
 		decreaseSongLength,
 		increaseSongLength,
+		channelsMoveUp,
+		channelsMoveDown,
+		channelsMoveLeft,
+		channelsMoveRight,
+		channelsJumpTop,
+		channelsJumpBottom,
+		channelsJumpLeft,
+		channelsJumpRight,
 	};
 
 	// all keybinds
@@ -57,6 +65,14 @@ namespace input {
 		Keybind {cmd::scaleUp, sf::Keyboard::Equal, true },
 		Keybind {cmd::decreaseSongLength, sf::Keyboard::Hyphen, false, false, true},
 		Keybind {cmd::increaseSongLength, sf::Keyboard::Equal, false, false, true},
+		Keybind {cmd::channelsMoveUp, sf::Keyboard::Up},
+		Keybind {cmd::channelsMoveDown, sf::Keyboard::Down},
+		Keybind {cmd::channelsMoveLeft, sf::Keyboard::Left},
+		Keybind {cmd::channelsMoveRight, sf::Keyboard::Right},
+		Keybind {cmd::channelsJumpTop, sf::Keyboard::Up, true},
+		Keybind {cmd::channelsJumpBottom, sf::Keyboard::Down, true},
+		Keybind {cmd::channelsJumpLeft, sf::Keyboard::Left, true},
+		Keybind {cmd::channelsJumpRight, sf::Keyboard::Right, true},
 	};
 	const int keybindN = sizeof(keybind) / sizeof(Keybind);
 
@@ -73,7 +89,7 @@ namespace input {
 		switch (command) {
 		default: return false;
 		case cmd::addChannel:
-			proj::project.addChannel("Channel " + std::to_string(proj::project.channels.size()), proj::ChannelType::empty);
+			proj::project.addChannel("Channel " + std::to_string(proj::project.getChannelCount()), proj::ChannelType::empty);
 			return true;
 		case cmd::fullscreen:
 			app::fullscreen = !app::fullscreen;
@@ -91,10 +107,35 @@ namespace input {
 			gui::init(false, true);
 			return true;
 		case cmd::decreaseSongLength:
-			proj::project.setSongLength(std::max(1U, proj::project.getSongLength())-1);
+			if (proj::project.getSongLength() > 1)
+				proj::project.setSongLength(proj::project.getSongLength()-1);
 			return true;
 		case cmd::increaseSongLength:
 			proj::project.setSongLength(proj::project.getSongLength() + 1U);
+			return true;
+		case cmd::channelsMoveUp:
+			gui::channels.moveSelected(0, -1);
+			return true;
+		case cmd::channelsMoveDown:
+			gui::channels.moveSelected(0, 1);
+			return true;
+		case cmd::channelsMoveLeft:
+			gui::channels.moveSelected(-1, 0);
+			return true;
+		case cmd::channelsMoveRight:
+			gui::channels.moveSelected(1, 0);
+			return true;
+		case cmd::channelsJumpTop:
+			gui::channels.setSelected(gui::channels.getSelected().x, 0);
+			return true;
+		case cmd::channelsJumpBottom:
+			gui::channels.setSelected(gui::channels.getSelected().x, proj::project.getChannelCount() - 1);
+			return true;
+		case cmd::channelsJumpLeft:
+			gui::channels.setSelected(0, gui::channels.getSelected().y);
+			return true;
+		case cmd::channelsJumpRight:
+			gui::channels.setSelected(proj::project.getSongLength() - 1, gui::channels.getSelected().y);
 			return true;
 		}
 	}

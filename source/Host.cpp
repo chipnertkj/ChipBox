@@ -82,9 +82,10 @@ namespace host {
 	void init() {
 		// PortAudio
 		Pa_Initialize();
-		cslog("PortAudio", std::string("Running ") + Pa_GetVersionInfo()->versionText);
-		for (PaHostApiIndex i = 0; i < Pa_GetHostApiCount(); i++)
-			cslog("Available Host APIs", Pa_GetHostApiInfo(i)->name);
+		cslogstr("PortAudio", std::string("Running ") + Pa_GetVersionInfo()->versionText)
+		for (PaHostApiIndex i = 0; i < Pa_GetHostApiCount(); i++) {
+			cslogstr("Available Host APIs", Pa_GetHostApiInfo(i)->name)
+		}
 	}
 
 	void start() {
@@ -95,13 +96,13 @@ namespace host {
 	}
 
 	void process() {
-		cslog("AUDIO ENGINE", "Thread started");
+		cslogstr("AUDIO ENGINE", "Thread started")
 		while (running) {
 			std::this_thread::sleep_for(std::chrono::milliseconds(300)); // temp
 			// TODO: stop when idle to decrease cpu usage cause the idiots will scream at me if i dont
 
 		}
-		cslog("AUDIO ENGINE", "Thread stopped");
+		cslogstr("AUDIO ENGINE", "Thread stopped")
 	}
 
 	void stop() {

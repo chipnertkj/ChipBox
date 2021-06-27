@@ -1,44 +1,72 @@
-﻿  GUIClasses.cpp
+﻿  App.cpp
+  GUI.cpp
+  GUIClasses.cpp
 C:\Projects\ChipBox\source\GUIClasses.cpp(351,39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Projects\ChipBox\source\GUIClasses.cpp(367,47): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Projects\ChipBox\source\GUIClasses.cpp(562,55): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Projects\ChipBox\source\GUIClasses.cpp(562,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Projects\ChipBox\source\GUIClasses.cpp(567,69): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Projects\ChipBox\source\GUIClasses.cpp(578,89): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Projects\ChipBox\source\GUIClasses.cpp(578,53): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Projects\ChipBox\source\GUIClasses.cpp(584,92): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Projects\ChipBox\source\GUIClasses.cpp(584,56): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Projects\ChipBox\source\GUIClasses.cpp(668,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Projects\ChipBox\source\GUIClasses.cpp(673,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Projects\ChipBox\source\GUIClasses.cpp(673,35): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Projects\ChipBox\source\GUIClasses.cpp(679,46): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Projects\ChipBox\source\GUIClasses.cpp(679,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Projects\ChipBox\source\GUIClasses.cpp(686,46): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
-C:\Projects\ChipBox\source\GUIClasses.cpp(700,19): warning C4244: 'initializing': conversion from 'float' to 'unsigned int', possible loss of data
-C:\Projects\ChipBox\source\GUIClasses.cpp(701,19): warning C4244: 'initializing': conversion from 'float' to 'unsigned int', possible loss of data
-C:\Projects\ChipBox\source\GUIClasses.cpp(722,22): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
+C:\Projects\ChipBox\source\GUIClasses.cpp(568,55): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Projects\ChipBox\source\GUIClasses.cpp(568,23): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Projects\ChipBox\source\GUIClasses.cpp(573,69): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Projects\ChipBox\source\GUIClasses.cpp(584,89): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Projects\ChipBox\source\GUIClasses.cpp(584,53): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Projects\ChipBox\source\GUIClasses.cpp(590,92): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Projects\ChipBox\source\GUIClasses.cpp(590,56): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Projects\ChipBox\source\GUIClasses.cpp(674,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Projects\ChipBox\source\GUIClasses.cpp(679,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Projects\ChipBox\source\GUIClasses.cpp(679,35): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Projects\ChipBox\source\GUIClasses.cpp(685,46): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Projects\ChipBox\source\GUIClasses.cpp(685,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Projects\ChipBox\source\GUIClasses.cpp(692,46): warning C4244: 'argument': conversion from 'float' to 'unsigned int', possible loss of data
+C:\Projects\ChipBox\source\GUIClasses.cpp(706,19): warning C4244: 'initializing': conversion from 'float' to 'unsigned int', possible loss of data
+C:\Projects\ChipBox\source\GUIClasses.cpp(707,19): warning C4244: 'initializing': conversion from 'float' to 'unsigned int', possible loss of data
+C:\Projects\ChipBox\source\GUIClasses.cpp(716,60): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Projects\ChipBox\source\GUIClasses.cpp(718,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Projects\ChipBox\source\GUIClasses.cpp(718,33): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Projects\ChipBox\source\GUIClasses.cpp(734,22): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Projects\ChipBox\source\GUIClasses.cpp(722,46): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
+C:\Projects\ChipBox\source\GUIClasses.cpp(734,46): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Projects\ChipBox\source\GUIClasses.cpp(723,22): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
+C:\Projects\ChipBox\source\GUIClasses.cpp(735,22): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Projects\ChipBox\source\GUIClasses.cpp(723,46): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
+C:\Projects\ChipBox\source\GUIClasses.cpp(735,46): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Projects\ChipBox\source\GUIClasses.cpp(724,21): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
+C:\Projects\ChipBox\source\GUIClasses.cpp(736,21): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
           with
           [
               T=float
           ]
+C:\Projects\ChipBox\source\GUIClasses.cpp(741,28): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Projects\ChipBox\source\GUIClasses.cpp(782,9): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Projects\ChipBox\source\GUIClasses.cpp(783,6): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+  GUIData.cpp
+  GUIUtility.cpp
+C:\Projects\ChipBox\source\GUIUtility.cpp(56,9): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Projects\ChipBox\source\GUIUtility.cpp(57,9): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Projects\ChipBox\source\GUIUtility.cpp(58,9): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+  Host.cpp
+  Keybinds.cpp
+  Main.cpp
+  ProjectClasses.cpp
+C:\Projects\ChipBox\source\ProjectClasses.cpp(30,49): warning C4244: '=': conversion from 'unsigned int' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Projects\ChipBox\source\ProjectClasses.cpp(40,65): warning C4244: '=': conversion from 'unsigned __int64' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+  Generating Code...
   ChipBox.vcxproj -> C:\Projects\ChipBox\build\debug\ChipBox.exe

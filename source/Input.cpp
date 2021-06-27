@@ -8,9 +8,9 @@ namespace input {
 	bool clickedRMB = false;
 	float scrollDelta = 0.f;
 
-	bool onClick() {
-		if (clickedLMB) {
-			clickedLMB = false;
+	bool onClick(bool& clickedButton) {
+		if (clickedButton) {
+			clickedButton = false;
 			return true;
 		}
 		return false;

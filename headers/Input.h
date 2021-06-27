@@ -9,7 +9,7 @@ namespace input {
 	extern bool clickedRMB;
 	extern float scrollDelta;
 
-	bool onClick();
+	bool onClick(bool& clickedButton);
 	void reset();
 	void keyPressed(sf::Keyboard::Key key);
 	void keyReleased(sf::Keyboard::Key key);

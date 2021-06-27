@@ -26,6 +26,9 @@ namespace gui {
 		sf::Color buttonInactive = sf::Color(102, 105, 116);
 		// modules
 		sf::Color moduleBg = sf::Color(111, 116, 125);
+		// channels
+		sf::Color selectedBG = sf::Color(255, 255, 255, 10);
+		sf::Color selected = sf::Color(255, 255, 255, 30);
 
 		theme();
 		theme(std::string name);
